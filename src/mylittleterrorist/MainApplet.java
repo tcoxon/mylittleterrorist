@@ -18,17 +18,14 @@ public class MainApplet extends Applet {
     public static final long UPDATE_PERIOD = 32;
 
     protected Timer timer;
-    protected TimerTask updateTask;
     
     protected Image buffer;
     protected Rectangle viewBounds;
 
     protected Game game;
-
+    
     @Override
     public void destroy() {
-        timer.cancel();
-        timer.purge();
         super.destroy();
     }
 
@@ -38,14 +35,6 @@ public class MainApplet extends Applet {
         resize(624, 468);
         
         game = new Game();
-        
-        timer = new Timer(true);
-        updateTask = new TimerTask() {
-            @Override
-            public void run() {
-                updateGame();
-            }
-        };
         
         this.addMouseListener(new MouseAdapter() {
 
@@ -103,6 +92,13 @@ public class MainApplet extends Applet {
     @Override
     public void start() {
         super.start();
+        timer = new Timer(true);
+        TimerTask updateTask = new TimerTask() {
+            @Override
+            public void run() {
+                updateGame();
+            }
+        };
         timer.schedule(updateTask, 0, UPDATE_PERIOD);
     }
 
@@ -110,6 +106,7 @@ public class MainApplet extends Applet {
     public void stop() {
         timer.cancel();
         timer.purge();
+        timer = null;
         super.stop();
     }
 
