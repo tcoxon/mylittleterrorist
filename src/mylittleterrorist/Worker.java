@@ -12,7 +12,7 @@ public class Worker {
     public final int id;
 
     protected String name = "Terry";
-    protected Object job = null; // TODO
+    protected IWorkerJob job = null; // TODO
     protected Point pos = null, prevPos = null, targetPos = null;
     protected int tweenFrames = 0;
     
@@ -36,11 +36,11 @@ public class Worker {
         this.targetPos = targetPos;
     }
 
-    public Object getJob() {
+    public IWorkerJob getJob() {
         return job;
     }
 
-    public void setJob(Object job) {
+    public void setJob(IWorkerJob job) {
         this.job = job;
     }
 
@@ -110,6 +110,17 @@ public class Worker {
         // Don't do anything else while performing animated movement between
         // positions
         if (tweenFrames != 0) return;
+        
+        if (job != null) {
+            if (!job.requiredPosition().equals(pos)) {
+                targetPos = job.requiredPosition();
+            } else {
+                if (job.getProgress() == 0.0)
+                    job.activate(game, this);
+                if (job != null) // job.activate can make job null...
+                    job.tick(game, this);
+            }
+        }
         
         if (targetPos != null) {
             Point next = AStar.nextStep(map, pos, targetPos);

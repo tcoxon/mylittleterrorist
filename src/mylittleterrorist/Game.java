@@ -1,13 +1,22 @@
 package mylittleterrorist;
 
+import java.applet.Applet;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Game {
 
@@ -19,7 +28,31 @@ public class Game {
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
     
-    public Game() {
+    protected Applet applet;
+    protected JPanel currentWindow;
+    protected Action currentWindowCloseAction;
+    
+    public Game(Applet a) {
+        applet = a;
+        currentWindowCloseAction = new Action() {
+
+            public void actionPerformed(ActionEvent e) {
+                applet.remove(currentWindow);
+                currentWindow = null;
+            }
+
+            public void addPropertyChangeListener(
+                    PropertyChangeListener listener) { }
+            public Object getValue(String key) { return null; }
+            public boolean isEnabled() {
+                return true;
+            }
+            public void putValue(String key, Object value) { }
+            public void removePropertyChangeListener(
+                    PropertyChangeListener listener) { }
+            public void setEnabled(boolean b) { }
+        };
+        
         map = new GameMap();
         
         bufferedEvents = new ArrayList<InputEvent>(200);
@@ -28,6 +61,35 @@ public class Game {
         addWorker();
         addWorker();
         addWorker();
+    }
+    
+    public void showWindow(IGameWindow w) {
+        if (currentWindow != null) applet.remove(currentWindow);
+        
+        final JPanel panel = new JPanel(new BorderLayout());
+        panel.setMinimumSize(w.getSize());
+        
+        JLabel label = new JLabel(w.getTitle());
+        panel.add(label, BorderLayout.NORTH);
+        
+        JPanel inner = new JPanel();
+        w.create(inner);
+        panel.add(inner, BorderLayout.CENTER);
+        
+        JPanel footer = new JPanel(new BorderLayout());
+        JButton close = new JButton("Close");
+        close.setAction(currentWindowCloseAction);
+        footer.add(close, BorderLayout.EAST);
+        panel.add(footer, BorderLayout.SOUTH);
+        
+        panel.setBounds(
+                (applet.getWidth()-w.getSize().width)/2,
+                (applet.getHeight()-w.getSize().height)/2,
+                w.getSize().width,
+                w.getSize().height);
+        
+        currentWindow = panel;
+        applet.add(panel);
     }
     
     public void addWorker() {
@@ -69,6 +131,13 @@ public class Game {
         }
         
         if (e.mouseButton == 3 && selectedWorker != 0) {
+            Worker worker = workerData.get(selectedWorker-1);
+            switch (t.getKind()) {
+            case MERCHANT:
+                worker.setJob(new MerchantJob(e.x, e.y));
+                return;
+            }
+            
             int y = e.y, x = e.x;
             switch (t.getKind()) {
             case CRAFTING_BENCH:
@@ -78,9 +147,6 @@ public class Game {
                 break;
             case DOOR:
                 y -= 1;
-                break;
-            case MERCHANT:
-                x += 1;
                 break;
             }
             // TODO if the target tile contains a usable block, make worker use

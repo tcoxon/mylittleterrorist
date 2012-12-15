@@ -34,7 +34,7 @@ public class MainApplet extends Applet {
         super.init();
         resize(624, 468);
         
-        game = new Game();
+        game = new Game(this);
         
         this.addMouseListener(new MouseAdapter() {
 
@@ -55,7 +55,6 @@ public class MainApplet extends Applet {
 
     @Override
     public void paint(Graphics g) {
-        super.paint(g);
         
         Dimension size = game.getPixelSize();
         if (buffer == null || buffer.getWidth(this) != size.width ||
@@ -77,6 +76,8 @@ public class MainApplet extends Applet {
         viewBounds.setBounds(x, y, scaledW, scaledH);
         
         g.drawImage(buffer, x, y, scaledW, scaledH, this);
+
+        super.paint(g);
     }
 
     @Override
