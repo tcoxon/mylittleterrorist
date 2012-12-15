@@ -69,21 +69,23 @@ public class Game {
         }
         
         if (e.mouseButton == 3 && selectedWorker != 0) {
-            int y = e.y;
+            int y = e.y, x = e.x;
             switch (t.getKind()) {
             case CRAFTING_BENCH:
             case INVENTORY:
             case SPONSOR:
                 y += 1;
                 break;
-            case MERCHANT:
             case DOOR:
                 y -= 1;
+                break;
+            case MERCHANT:
+                x += 1;
                 break;
             }
             // TODO if the target tile contains a usable block, make worker use
             // it
-            workerData.get(selectedWorker-1).setTargetPos(new Point(e.x, y));
+            workerData.get(selectedWorker-1).setTargetPos(new Point(x, y));
         }
     }
     

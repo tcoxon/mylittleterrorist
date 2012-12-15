@@ -29,9 +29,9 @@ public class GameMap implements AStar.IMap {
             mapData[x][0] = new Tile(Tile.Kind.INVENTORY, 0);
         }
         
-        mapData[getWidth()/2][getHeight()-2] = new Tile(Tile.Kind.MERCHANT, 0);
+        mapData[1][getHeight()/2] = new Tile(Tile.Kind.MERCHANT, 0);
         
-        mapData[1][getHeight()/2] = new Tile(Tile.Kind.SPONSOR, 0);
+        mapData[getWidth()-2][getHeight()/2] = new Tile(Tile.Kind.SPONSOR, 0);
     }
     
     public Point getWorkerEntrance() {
