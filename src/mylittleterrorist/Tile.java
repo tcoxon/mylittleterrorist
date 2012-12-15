@@ -14,11 +14,10 @@ public class Tile {
         this.kind = kind;
         this.extraData = extraData;
     }
-
-    public boolean isWalkable() {
+    
+    public boolean isFloor() {
         switch (kind) {
         case FLOOR:
-        case DOOR:
             return true;
         default:
             return false;

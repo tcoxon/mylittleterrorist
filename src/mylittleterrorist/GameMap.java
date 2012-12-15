@@ -1,12 +1,14 @@
 package mylittleterrorist;
 
 import java.awt.Dimension;
+import java.awt.Point;
 
 public class GameMap {
 
     protected static final int DEFAULT_WIDTH = 12, DEFAULT_HEIGHT = 9;
 
     protected Tile[][] mapData;
+    protected Point workerEntrance;
 
     public GameMap() {
         mapData = new Tile[DEFAULT_WIDTH][DEFAULT_HEIGHT];
@@ -15,7 +17,9 @@ public class GameMap {
         wall(Tile.Kind.WALL);
         
         mapData[2][getHeight()-1] = new Tile(Tile.Kind.DOOR, 0);
-        mapData[getWidth()-3][getHeight()-1] = new Tile(Tile.Kind.DOOR, 0);
+        
+        workerEntrance = new Point(getWidth()-3, getHeight()-1);
+        mapData[workerEntrance.x][workerEntrance.y] = new Tile(Tile.Kind.DOOR, 0);
         
         for (int x = 4; x < getWidth()-4; ++x) {
             mapData[x][1] = new Tile(Tile.Kind.CRAFTING_BENCH, 0);
@@ -24,14 +28,22 @@ public class GameMap {
         mapData[getWidth()/2][getHeight()-2] = new Tile(Tile.Kind.MERCHANT, 0);
         
         mapData[1][getHeight()/2] = new Tile(Tile.Kind.SPONSOR, 0);
-        
-        mapData[getWidth()/2][getHeight()/2] = new Tile(Tile.Kind.WORKER, 0);
-        mapData[getWidth()-2][2] = new Tile(Tile.Kind.WORKER, 0);
-        mapData[getWidth()-2][3] = new Tile(Tile.Kind.WORKER, 0);
     }
     
+    public Point getWorkerEntrance() {
+        return workerEntrance;
+    }
+
+    public void setWorkerEntrance(Point workerEntrance) {
+        this.workerEntrance = workerEntrance;
+    }
+
     public Tile get(int x, int y) {
         return mapData[x][y];
+    }
+    
+    public void set(int x, int y, Tile t) {
+        mapData[x][y] = t;
     }
 
     protected void fill(Tile.Kind kind) {

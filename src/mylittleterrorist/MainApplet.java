@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,6 +21,7 @@ public class MainApplet extends Applet {
     protected TimerTask updateTask;
     
     protected Image buffer;
+    protected Rectangle viewBounds;
 
     protected Game game;
 
@@ -42,6 +46,22 @@ public class MainApplet extends Applet {
                 updateGame();
             }
         };
+        
+        this.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (viewBounds != null && viewBounds.contains(e.getPoint())) {
+                    Dimension size = game.getMapSize();
+                    int x = (int)(e.getX() - viewBounds.getMinX()),
+                        y = (int)(e.getY() - viewBounds.getMinY());
+                    x = (int)((x/viewBounds.getWidth()) * size.width);
+                    y = (int)((y/viewBounds.getHeight()) * size.height);
+                    game.inputEvent(x,y,e);
+                }
+            }
+            
+        });
     }
 
     @Override
@@ -63,6 +83,9 @@ public class MainApplet extends Applet {
             scaledH = (int)(size.height * scale);
         int x = (getWidth()-scaledW)/2,
             y = (getHeight()-scaledH)/2;
+        
+        if (viewBounds == null) viewBounds = new Rectangle();
+        viewBounds.setBounds(x, y, scaledW, scaledH);
         
         g.drawImage(buffer, x, y, scaledW, scaledH, this);
     }
