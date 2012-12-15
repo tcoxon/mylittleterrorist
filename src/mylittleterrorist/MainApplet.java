@@ -15,7 +15,7 @@ public class MainApplet extends Applet {
     private static final long serialVersionUID = 1L;
 
     // Milliseconds between each update
-    public static final long UPDATE_PERIOD = 32;
+    public static final long UPDATE_PERIOD = 320;
 
     protected Timer timer;
     

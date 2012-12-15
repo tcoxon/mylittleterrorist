@@ -1,6 +1,6 @@
 package mylittleterrorist;
 
-public class Tile {
+public class Tile implements AStar.ITile {
 
     public static enum Kind {
         FLOOR, WALL, DOOR, CRAFTING_BENCH, INVENTORY,

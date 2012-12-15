@@ -80,8 +80,18 @@ public class Worker {
     }
 
     public void updateOnScreen(Game game, int x, int y) {
+        GameMap map = game.getMap();
         if (targetPos != null) {
-            // TODO A* path-finding
+            Point next = AStar.nextStep(map, new Point(x,y), targetPos);
+            if (next != null) {
+                Tile workerTile = map.get(x, y);
+                map.set(next.x, next.y, workerTile);
+                map.set(x, y, new Tile(Tile.Kind.FLOOR, 0));
+                x = next.x;
+                y = next.y;
+            }
+            if (x == targetPos.x && y == targetPos.y)
+                targetPos = null;
         }
     }
 

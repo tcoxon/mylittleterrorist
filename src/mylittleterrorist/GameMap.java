@@ -3,7 +3,7 @@ package mylittleterrorist;
 import java.awt.Dimension;
 import java.awt.Point;
 
-public class GameMap {
+public class GameMap implements AStar.IMap {
 
     protected static final int DEFAULT_WIDTH = 12, DEFAULT_HEIGHT = 9;
 
