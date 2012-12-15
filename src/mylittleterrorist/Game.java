@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Game {
 
-    public static final int TILE_WIDTH = 32, TILE_HEIGHT = 32;
+    public static final int TILE_WIDTH = 52, TILE_HEIGHT = 52;
 
     protected List<InputEvent> bufferedEvents;
     protected GameMap map;

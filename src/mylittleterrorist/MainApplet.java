@@ -35,7 +35,7 @@ public class MainApplet extends Applet {
     @Override
     public void init() {
         super.init();
-        resize(800, 600);
+        resize(624, 468);
         
         game = new Game();
         
