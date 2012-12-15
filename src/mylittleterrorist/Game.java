@@ -85,16 +85,8 @@ public class Game {
     }
     
     protected void updateWorkers() {
-        for (int x = 0; x < map.getWidth(); ++x)
-        for (int y = 0; y < map.getHeight(); ++y) {
-            Tile t = map.get(x,y);
-            if (t.getKind() == Tile.Kind.WORKER) {
-                Worker worker = workerData.get(t.getExtraData()-1);
-                worker.updateOnScreen(this, x, y);
-            }
-        }
         for (Worker worker: workerData) {
-            worker.updateOffScreen(this);
+            worker.update(this);
         }
     }
     

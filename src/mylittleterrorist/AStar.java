@@ -91,7 +91,6 @@ public class AStar {
             
             closedSet.add(current);
             
-            // For each neighbour...
             for (Point neighbor: getNeighbors(current)) {
                 
                 if (closedSet.contains(neighbor))
@@ -99,7 +98,8 @@ public class AStar {
                 if (!map.get(neighbor.x, neighbor.y).isFloor())
                     continue;
                 
-                double g = gScore.get(current) + current.distance(neighbor);
+                double dist = current.distance(neighbor);
+                double g = gScore.get(current) + dist;
                 
                 if (!openSet.contains(neighbor) || g < gScore.get(neighbor)) {
                     cameFrom.put(neighbor, current);

@@ -11,8 +11,7 @@ public class Worker {
 
     protected String name = "Terry";
     protected Object job = null; // TODO
-    protected boolean onScreen = false;
-    protected Point targetPos = null;
+    protected Point pos = null, targetPos = null;
     
     public Worker(int id) {
         this.id = id;
@@ -43,14 +42,10 @@ public class Worker {
     }
 
     public boolean isOnScreen() {
-        return onScreen;
+        return pos != null;
     }
 
-    public void setOnScreen(boolean onScreen) {
-        this.onScreen = onScreen;
-    }
-
-    public void updateOffScreen(Game game) {
+    protected void updateOffScreen(Game game) {
         GameMap map = game.getMap();
         
         if (getJob() == null && !isOnScreen()) {
@@ -60,6 +55,7 @@ public class Worker {
                     Tile.Kind.FLOOR) {
                 map.set(entrance.x, entrance.y-1,
                         new Tile(Tile.Kind.WORKER, id));
+                pos = new Point(entrance.x, entrance.y-1);
             }
             
             // TODO: send worker to inventory if carrying something
@@ -74,25 +70,35 @@ public class Worker {
             if (floorTiles.size() != 0) {
                 targetPos = floorTiles.get(
                         new Random().nextInt(floorTiles.size()));
-                onScreen = true;
             }
         }
     }
+    
+    protected void moveTo(GameMap map, int x, int y) {
+        Tile workerTile = map.get(pos.x, pos.y);
+        map.set(x, y, workerTile);
+        map.set(pos.x, pos.y, new Tile(Tile.Kind.FLOOR, 0));
+        pos.x = x;
+        pos.y = y;
+    }
 
-    public void updateOnScreen(Game game, int x, int y) {
+    protected void updateOnScreen(Game game) {
         GameMap map = game.getMap();
         if (targetPos != null) {
-            Point next = AStar.nextStep(map, new Point(x,y), targetPos);
+            Point next = AStar.nextStep(map, pos, targetPos);
             if (next != null) {
-                Tile workerTile = map.get(x, y);
-                map.set(next.x, next.y, workerTile);
-                map.set(x, y, new Tile(Tile.Kind.FLOOR, 0));
-                x = next.x;
-                y = next.y;
+                moveTo(map, next.x, next.y);
             }
-            if (x == targetPos.x && y == targetPos.y)
+            if (pos.equals(targetPos))
                 targetPos = null;
         }
+    }
+    
+    public void update(Game game) {
+        if (isOnScreen())
+            updateOnScreen(game);
+        else
+            updateOffScreen(game);
     }
 
 }
