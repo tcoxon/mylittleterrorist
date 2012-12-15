@@ -69,9 +69,21 @@ public class Game {
         }
         
         if (e.mouseButton == 3 && selectedWorker != 0) {
+            int y = e.y;
+            switch (t.getKind()) {
+            case CRAFTING_BENCH:
+            case INVENTORY:
+            case SPONSOR:
+                y += 1;
+                break;
+            case MERCHANT:
+            case DOOR:
+                y -= 1;
+                break;
+            }
             // TODO if the target tile contains a usable block, make worker use
             // it
-            workerData.get(selectedWorker-1).setTargetPos(new Point(e.x,e.y));
+            workerData.get(selectedWorker-1).setTargetPos(new Point(e.x, y));
         }
     }
     
@@ -88,6 +100,23 @@ public class Game {
         for (Worker worker: workerData) {
             worker.update(this);
         }
+    }
+    
+    protected void drawWorker(Graphics2D g, Tile tile) {
+        Worker worker = workerData.get(tile.getExtraData()-1);
+        
+        int tween = worker.getTweenFrames();
+        if (tween != 0) {
+            worker.decTweenFrames();
+            int x = (worker.getPrevPos().x-worker.getPos().x) *
+                    tween * TILE_WIDTH / Worker.MAX_TWEEN_FRAMES,
+                y = (worker.getPrevPos().y-worker.getPos().y) *
+                    tween * TILE_HEIGHT / Worker.MAX_TWEEN_FRAMES;
+            g.translate(x, y);
+        }
+        
+        g.drawString("T", TILE_WIDTH/2, TILE_HEIGHT/2);
+        g.drawOval(1, 1, TILE_WIDTH-3, TILE_HEIGHT-3);
     }
     
     protected void renderTile(Graphics2D g, Tile tile) {
@@ -112,8 +141,7 @@ public class Game {
             g.drawString("I", TILE_WIDTH/2, TILE_HEIGHT/2);
             break;
         case WORKER:
-            g.drawString("T", TILE_WIDTH/2, TILE_HEIGHT/2);
-            g.drawOval(1, 1, TILE_WIDTH-3, TILE_HEIGHT-3);
+            drawWorker(g, tile);
             break;
         case SPONSOR:
             g.drawString("S", TILE_WIDTH/2, TILE_HEIGHT/2);

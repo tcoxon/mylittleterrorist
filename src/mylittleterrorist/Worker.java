@@ -7,11 +7,14 @@ import java.util.Random;
 
 public class Worker {
     
+    public static final int MAX_TWEEN_FRAMES = 10;
+    
     public final int id;
 
     protected String name = "Terry";
     protected Object job = null; // TODO
-    protected Point pos = null, targetPos = null;
+    protected Point pos = null, prevPos = null, targetPos = null;
+    protected int tweenFrames = 0;
     
     public Worker(int id) {
         this.id = id;
@@ -55,7 +58,9 @@ public class Worker {
                     Tile.Kind.FLOOR) {
                 map.set(entrance.x, entrance.y-1,
                         new Tile(Tile.Kind.WORKER, id));
+                prevPos = new Point(entrance.x, entrance.y);
                 pos = new Point(entrance.x, entrance.y-1);
+                tweenFrames = MAX_TWEEN_FRAMES;
             }
             
             // TODO: send worker to inventory if carrying something
@@ -78,12 +83,34 @@ public class Worker {
         Tile workerTile = map.get(pos.x, pos.y);
         map.set(x, y, workerTile);
         map.set(pos.x, pos.y, new Tile(Tile.Kind.FLOOR, 0));
-        pos.x = x;
-        pos.y = y;
+        prevPos = pos;
+        pos = new Point(x,y);
+        tweenFrames = MAX_TWEEN_FRAMES;
+    }
+
+    public Point getPrevPos() {
+        return prevPos;
+    }
+
+    public int getTweenFrames() {
+        return tweenFrames;
+    }
+
+    public void decTweenFrames() {
+        --tweenFrames;
+    }
+
+    public Point getPos() {
+        return pos;
     }
 
     protected void updateOnScreen(Game game) {
         GameMap map = game.getMap();
+        
+        // Don't do anything else while performing animated movement between
+        // positions
+        if (tweenFrames != 0) return;
+        
         if (targetPos != null) {
             Point next = AStar.nextStep(map, pos, targetPos);
             if (next != null) {
