@@ -40,6 +40,28 @@ public class Game {
         case DOOR:
             g.drawString("D", TILE_WIDTH/2, TILE_HEIGHT/2);
             break;
+        case CRAFTING_BENCH:
+            g.drawRect(0, 4, TILE_WIDTH-1, TILE_HEIGHT-5);
+            g.drawString("C", TILE_WIDTH/2, TILE_HEIGHT/2);
+            break;
+        case INVENTORY:
+            g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
+            g.drawString("I", TILE_WIDTH/2, TILE_HEIGHT/2);
+            break;
+        case WORKER:
+            g.drawString("T", TILE_WIDTH/2, TILE_HEIGHT/2);
+            g.drawOval(1, 1, TILE_WIDTH-2, TILE_HEIGHT-2);
+            break;
+        case SPONSOR:
+            g.drawString("S", TILE_WIDTH/2, TILE_HEIGHT/2);
+            g.drawOval(1, 1, TILE_WIDTH-2, TILE_HEIGHT-2);
+            break;
+        case MERCHANT:
+            g.drawString("M", TILE_WIDTH/2, TILE_HEIGHT/2);
+            g.drawOval(1, 1, TILE_WIDTH-2, TILE_HEIGHT-2);
+            break;
+        default:
+            throw new RuntimeException("Unhandled tile kind");
         }
     }
 

@@ -3,7 +3,8 @@ package mylittleterrorist;
 public class Tile {
 
     public static enum Kind {
-        FLOOR, WALL, DOOR
+        FLOOR, WALL, DOOR, CRAFTING_BENCH, INVENTORY,
+        WORKER, SPONSOR, MERCHANT
     }
 
     protected Kind kind;
