@@ -22,6 +22,7 @@ public class Game {
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
     protected int money, renown;
+    protected InventorySlot[] inventory;
     
     protected Spritesheet spritesheet;
     
@@ -51,7 +52,29 @@ public class Game {
         addWorker(Worker.Style.MALE);
         addWorker(Worker.Style.FEMALE);
         
+        setupInventory();
+        
         frame = 0;
+    }
+    
+    protected void setupInventory() {
+        int count = 0;
+        for (int x = 0; x < map.getWidth(); ++x)
+        for (int y = 0; y < map.getHeight(); ++y) {
+            Tile t = map.get(x,y);
+            if (t.getKind() == Tile.Kind.INVENTORY) {
+                t.setExtraData(count++);
+            }
+        }
+        inventory = new InventorySlot[count];
+        for (int i = 0; i < count; ++i) {
+            inventory[i] = new InventorySlot();
+        }
+        
+        inventory[0].set(Item.COAL, 2);
+        inventory[1].set(Item.SULPHUR, 2);
+        inventory[2].set(Item.FERTILIZER, 2);
+        inventory[3].set(Item.BOMB, 1);
     }
     
     public Worker[] getWorkers() {
@@ -217,6 +240,10 @@ public class Game {
     
     protected void renderTile(Graphics2D g, Tile tile) {
         tile.render(g, spritesheet, frame);
+        if (tile.getKind() == Tile.Kind.INVENTORY) {
+            InventorySlot slot = inventory[tile.getExtraData()];
+            slot.render(g);
+        }
     }
 
     public synchronized void render(Graphics2D g) {
