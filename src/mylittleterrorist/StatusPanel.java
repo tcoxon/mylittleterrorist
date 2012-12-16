@@ -43,7 +43,8 @@ public class StatusPanel extends JPanel {
         
         workerList = new JList(game.getWorkers());
         workerList.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        add(workerList, BorderLayout.CENTER);
+        JScrollPane workerListScroll = new JScrollPane(workerList);
+        add(workerListScroll, BorderLayout.CENTER);
         
         workerList.addListSelectionListener(new ListSelectionListener() {
 
