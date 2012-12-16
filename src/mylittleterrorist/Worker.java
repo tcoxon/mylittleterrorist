@@ -1,5 +1,6 @@
 package mylittleterrorist;
 
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +8,25 @@ import java.util.Random;
 
 public class Worker {
     
+    public static enum Style {
+        MALE, FEMALE
+    }
+    
     public static final int MAX_TWEEN_FRAMES = 10;
     
     public final int id;
 
-    protected String name = "Terry";
+    protected String name;
     protected IWorkerJob job = null; // TODO
     protected Point pos = null, prevPos = null, targetPos = null;
     protected int tweenFrames = 0;
+    protected Style style;
     
-    public Worker(int id) {
+    public Worker(int id, Style style) {
         this.id = id;
+        this.style = style;
+        if (style == Style.FEMALE) name = "Terri";
+        else name = "Terry";
     }
     
     public String getName() {
@@ -137,6 +146,26 @@ public class Worker {
             updateOnScreen(game);
         else
             updateOffScreen(game);
+    }
+
+    public void render(Graphics2D g, Spritesheet spritesheet) {
+        int row, col;
+        switch (style) {
+        case MALE:
+            row = 1;
+            col = 2;
+            break;
+        case FEMALE:
+            row = 1;
+            col = 0;
+            break;
+        default:
+            throw new RuntimeException("Unknown worker style");
+        }
+        // Animate movement:
+        if (tweenFrames >= MAX_TWEEN_FRAMES/2)
+            ++col;
+        g.drawImage(spritesheet.get(col, row), null, 0, 0);
     }
 
 }

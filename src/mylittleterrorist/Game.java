@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import mylittleterrorist.Worker.Style;
 
 public class Game {
 
@@ -28,9 +31,13 @@ public class Game {
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
     
+    protected Spritesheet spritesheet;
+    
     protected Applet applet;
     protected JPanel currentWindow;
     protected Action currentWindowCloseAction;
+    
+    protected int frame;
     
     public Game(Applet a) {
         applet = a;
@@ -53,14 +60,25 @@ public class Game {
             public void setEnabled(boolean b) { }
         };
         
+        try {
+            spritesheet = new Spritesheet("/sprites/spritesheet.png",
+                TILE_WIDTH, TILE_HEIGHT);
+        } catch (IOException e) {
+            System.err.println("Unable to load spritesheet:");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
         map = new GameMap();
         
         bufferedEvents = new ArrayList<InputEvent>(200);
         
         workerData = new ArrayList<Worker>(20);
-        addWorker();
-        addWorker();
-        addWorker();
+        addWorker(Worker.Style.MALE);
+        addWorker(Worker.Style.MALE);
+        addWorker(Worker.Style.FEMALE);
+        
+        frame = 0;
     }
     
     public void showWindow(IGameWindow w) {
@@ -92,8 +110,8 @@ public class Game {
         applet.add(panel);
     }
     
-    public void addWorker() {
-        Worker worker = new Worker(workerData.size()+1);
+    public void addWorker(Style style) {
+        Worker worker = new Worker(workerData.size()+1, style);
         workerData.add(worker);
     }
 
@@ -170,7 +188,7 @@ public class Game {
         }
     }
     
-    protected void drawWorker(Graphics2D g, Tile tile) {
+    protected void renderWorker(Graphics2D g, Tile tile) {
         Worker worker = workerData.get(tile.getExtraData()-1);
         
         int tween = worker.getTweenFrames();
@@ -183,77 +201,76 @@ public class Game {
             g.translate(x, y);
         }
         
-        g.drawString("T", TILE_WIDTH/2, TILE_HEIGHT/2);
-        g.drawOval(1, 1, TILE_WIDTH-3, TILE_HEIGHT-3);
+        worker.render(g, spritesheet);
     }
     
     protected void renderTile(Graphics2D g, Tile tile) {
-        g.setColor(Color.BLACK);
-        switch (tile.getKind()) {
-        case FLOOR:
-            // Nothing for now... TODO
-            break;
-        case WALL:
-            g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
-            g.drawString("W", TILE_WIDTH/2, TILE_HEIGHT/2);
-            break;
-        case DOOR:
-            g.drawString("D", TILE_WIDTH/2, TILE_HEIGHT/2);
-            break;
-        case CRAFTING_BENCH:
-            g.drawRect(0, 4, TILE_WIDTH-1, TILE_HEIGHT-9);
-            g.drawString("C", TILE_WIDTH/2, TILE_HEIGHT/2);
-            break;
-        case INVENTORY:
-            g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
-            g.drawString("I", TILE_WIDTH/2, TILE_HEIGHT/2);
-            break;
-        case WORKER:
-            drawWorker(g, tile);
-            break;
-        case SPONSOR:
-            g.drawString("S", TILE_WIDTH/2, TILE_HEIGHT/2);
-            g.drawOval(1, 1, TILE_WIDTH-3, TILE_HEIGHT-3);
-            break;
-        case MERCHANT:
-            g.drawString("M", TILE_WIDTH/2, TILE_HEIGHT/2);
-            g.drawOval(1, 1, TILE_WIDTH-3, TILE_HEIGHT-3);
-            break;
-        default:
-            throw new RuntimeException("Unhandled tile kind");
-        }
+        tile.render(g, spritesheet, frame);
     }
 
     public synchronized void render(Graphics2D g) {
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, getPixelSize().width, getPixelSize().height);
         
-        // TODO use sprites
+        // Layer 1: Everything but WORKERs
         for (int x = 0; x < map.getWidth(); ++x)
         for (int y = 0; y < map.getHeight(); ++y) {
-            AffineTransform origXfm = g.getTransform();
             Tile tile = map.get(x,y);
             
+            AffineTransform origXfm = g.getTransform();
             g.translate(x * TILE_WIDTH, y * TILE_HEIGHT);
             renderTile(g, tile);
             
-            if (tile.getKind() == Tile.Kind.WORKER &&
-                    selectedWorker == tile.getExtraData()) {
+            g.setTransform(origXfm);
+        }
+        
+        // Layer 2: WORKERs
+        for (int x = 0; x < map.getWidth(); ++x)
+        for (int y = 0; y < map.getHeight(); ++y) {
+            Tile tile = map.get(x,y);
+            
+            if (tile.getKind() != Tile.Kind.WORKER) continue;
+            
+            AffineTransform origXfm = g.getTransform();
+            g.translate(x * TILE_WIDTH, y * TILE_HEIGHT);
+            renderWorker(g, tile);
+            
+            // Draw a green box around selected workers
+            if (selectedWorker == tile.getExtraData()) {
                 g.setColor(Color.GREEN);
                 g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
             }
             
-            if (selectedWorker != 0) {
-                Worker worker = workerData.get(selectedWorker-1);
-                Point target = worker.getTargetPos();
-                if (target != null && target.x == x && target.y == y) {
-                    g.setColor(Color.YELLOW);
-                    g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
-                }
-            }
+            g.setTransform(origXfm);
+        }
+        
+        // Layer 3: DOORs (cover the workers)
+        for (int x = 0; x < map.getWidth(); ++x)
+        for (int y = 0; y < map.getHeight(); ++y) {
+            Tile tile = map.get(x,y);
+            
+            if (tile.getKind() != Tile.Kind.DOOR) continue;
+            
+            AffineTransform origXfm = g.getTransform();
+            g.translate(x * TILE_WIDTH, y * TILE_HEIGHT);
+            renderTile(g, tile);
             
             g.setTransform(origXfm);
         }
+        
+        if (selectedWorker != 0) {
+            Worker worker = workerData.get(selectedWorker-1);
+            Point target = worker.getTargetPos();
+            if (target != null) {
+                AffineTransform origXfm = g.getTransform();
+                g.translate(target.x * TILE_WIDTH, target.y * TILE_HEIGHT);
+                g.setColor(Color.YELLOW);
+                g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
+                g.setTransform(origXfm);
+            }
+        }
+        
+        ++frame;
     }
     
     public synchronized void inputEvent(InputEvent ie) {

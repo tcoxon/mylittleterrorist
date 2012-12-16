@@ -23,14 +23,6 @@ public class AStar {
         public int getHeight();
     }
     
-    protected static class PointComparator implements Comparator<Point> {
-        public int compare(Point arg0, Point arg1) {
-            if (arg0.x == arg1.x) return arg0.y - arg1.y;
-            return arg0.x - arg1.x;
-        }
-    }
-    protected static final PointComparator POINTCMP = new PointComparator();
-    
     protected class DistanceComparator implements Comparator<Point> {
         public int compare(Point o1, Point o2) {
             double s1 = fScore.get(o1),
@@ -42,10 +34,10 @@ public class AStar {
     }
     protected final DistanceComparator DISTCMP = new DistanceComparator();
     
-    protected Map<Point, Double> gScore = new TreeMap<Point, Double>(POINTCMP),
-                                 fScore = new TreeMap<Point, Double>(POINTCMP);
-    protected Map<Point, Point> cameFrom = new TreeMap<Point, Point>(POINTCMP);
-    protected Set<Point> closedSet = new TreeSet<Point>(POINTCMP);
+    protected Map<Point, Double> gScore = new TreeMap<Point, Double>(Util.POINTCMP),
+                                 fScore = new TreeMap<Point, Double>(Util.POINTCMP);
+    protected Map<Point, Point> cameFrom = new TreeMap<Point, Point>(Util.POINTCMP);
+    protected Set<Point> closedSet = new TreeSet<Point>(Util.POINTCMP);
     protected Queue<Point> openSet = new PriorityQueue<Point>(110, DISTCMP);
     protected IMap map;
     protected Point from, to;
