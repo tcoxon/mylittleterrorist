@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 public class StatusPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     
+    protected MainApplet applet;
     protected Game game;
     protected JLabel moneyLabel, renownLabel;
     protected JList workerList;
@@ -24,8 +25,9 @@ public class StatusPanel extends JPanel {
     // causes the game's selected worker to change again
     protected boolean inUpdate = false;
     
-    public StatusPanel(Game g) {
+    public StatusPanel(Game g, MainApplet a) {
         this.game = g;
+        this.applet = a;
 
         BorderLayout layout = new BorderLayout(5,5);
         setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -45,20 +47,18 @@ public class StatusPanel extends JPanel {
         
         workerList.addListSelectionListener(new ListSelectionListener() {
 
-            public void valueChanged(ListSelectionEvent arg0) {
+            public void valueChanged(ListSelectionEvent e) {
                 if (!inUpdate)
                     game.inputEvent(new InputEvent(
                             InputEvent.Kind.SELECT_WORKER,
-                            arg0.getFirstIndex()+1));
+                            workerList.getSelectedIndex()+1));
             }
             
         });
         
         detailPanel = new JPanel();
-        detailPanel.setVisible(false);
         detailPanel.setLayout(new BorderLayout(5,5));
         detailPanel.setBorder(new EmptyBorder(5,5,5,5));
-        add(detailPanel, BorderLayout.SOUTH);
         
         selectionNameLabel = new JLabel("");
         detailPanel.add(selectionNameLabel, BorderLayout.NORTH);
@@ -74,6 +74,9 @@ public class StatusPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 game.inputEvent(new InputEvent(InputEvent.Kind.JOB_CANCEL));
+                // Also display the map panel in case the job we want to
+                // cancel has caused a window to appear.
+                applet.showMapPanel();
             }
         });
         detailPanel.add(selectionCancelJobButton, BorderLayout.SOUTH);
@@ -96,15 +99,16 @@ public class StatusPanel extends JPanel {
         
         Worker sel = game.getSelectedWorker();
         if (sel != null) {
-            detailPanel.setVisible(true);
+            add(detailPanel, BorderLayout.SOUTH);
             
             selectionNameLabel.setText(sel.getName());
             selectionStatusLabel.setText(sel.getJobDescription());
             // TODO display name of the object worker is holding
             selectionCancelJobButton.setVisible(sel.getJob() != null);
         } else {
-            detailPanel.setVisible(false);
+            remove(detailPanel);
         }
+        applet.validate();
         
         inUpdate = false;
     }

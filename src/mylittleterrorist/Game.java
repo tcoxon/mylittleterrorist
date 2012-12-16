@@ -1,15 +1,14 @@
 package mylittleterrorist;
 
-import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.*;
 
 import mylittleterrorist.Worker.Style;
 
@@ -26,33 +25,14 @@ public class Game {
     
     protected Spritesheet spritesheet;
     
-    protected Applet applet;
-    protected Window currentWindow;
-    protected Action currentWindowCloseAction;
+    protected MainApplet applet;
+    protected JPanel currentWindow;
     
     protected int frame;
     
-    public Game(Applet a) {
+    public Game(MainApplet a) {
         applet = a;
-        currentWindowCloseAction = new Action() {
 
-            public void actionPerformed(ActionEvent e) {
-                applet.remove(currentWindow);
-                currentWindow = null;
-            }
-
-            public void addPropertyChangeListener(
-                    PropertyChangeListener listener) { }
-            public Object getValue(String key) { return null; }
-            public boolean isEnabled() {
-                return true;
-            }
-            public void putValue(String key, Object value) { }
-            public void removePropertyChangeListener(
-                    PropertyChangeListener listener) { }
-            public void setEnabled(boolean b) { }
-        };
-        
         try {
             spritesheet = new Spritesheet("/sprites/spritesheet.png",
                 TILE_WIDTH, TILE_HEIGHT);
@@ -78,37 +58,42 @@ public class Game {
         return workerData.toArray(new Worker[0]);
     }
     
-    public void showWindow(IGameWindow w) {
+    public void showWindow(Worker worker, IGameWindow w) {
+        if (worker != null)
+            selectedWorker = worker.id;
+        
         if (currentWindow != null) currentWindow.setVisible(false);
         
-        final JDialog dlg = new JDialog((Frame)null, w.getTitle(), true);
         final JPanel panel = new JPanel(new BorderLayout());
-        panel.setPreferredSize(w.getSize());
-        dlg.setLayout(new BorderLayout());
-        dlg.add(panel, BorderLayout.CENTER);
         
-        w.create(panel);
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(new EmptyBorder(5,5,5,5));
+        header.setBackground(Color.DARK_GRAY);
+        JLabel title = new JLabel(w.getTitle());
+        title.setForeground(Color.WHITE);
+        header.add(title, BorderLayout.WEST);
         
-        dlg.pack();
-        dlg.addWindowListener(new WindowAdapter() {
+        JButton closeBtn = new JButton("X");
+        closeBtn.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void windowClosed(WindowEvent e) {
-                currentWindow = null;
+            public void mouseClicked(MouseEvent e) {
+                applet.showMapPanel();
             }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                super.windowLostFocus(e);
-                dlg.setVisible(false);
-            }
-            
-            
             
         });
-        currentWindow = dlg;
-        dlg.setVisible(true);
+        header.add(closeBtn, BorderLayout.EAST);
         
+        panel.add(header, BorderLayout.NORTH);
+        
+        
+        JPanel innerPanel = new JPanel();
+        panel.add(innerPanel, BorderLayout.CENTER);
+        
+        w.create(innerPanel);
+        
+        currentWindow = panel;
+        applet.showPanel(panel);
     }
     
     public void addWorker(Style style) {

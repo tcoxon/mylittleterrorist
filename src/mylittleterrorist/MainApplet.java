@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.*;
+
 public class MainApplet extends Applet {
     private static final long serialVersionUID = 1L;
 
@@ -14,9 +16,21 @@ public class MainApplet extends Applet {
 
     protected Timer timer;
     protected MapPanel mapPanel;
+    protected JPanel currentPanel;
     protected StatusPanel statusPanel;
     
     protected Game game;
+    
+    public void showPanel(JPanel panel) {
+        remove(currentPanel);
+        currentPanel = panel;
+        add(panel, BorderLayout.CENTER);
+        validate();
+    }
+    
+    public void showMapPanel() {
+        showPanel(mapPanel);
+    }
     
     @Override
     public void destroy() {
@@ -38,10 +52,11 @@ public class MainApplet extends Applet {
         game = new Game(this);
         
         mapPanel = new MapPanel(game);
+        currentPanel = mapPanel;
         setLayout(new BorderLayout());
         add(mapPanel, BorderLayout.CENTER);
         
-        statusPanel = new StatusPanel(game);
+        statusPanel = new StatusPanel(game, this);
         add(statusPanel, BorderLayout.EAST);
         
         resize(getPreferredSize());
@@ -49,8 +64,10 @@ public class MainApplet extends Applet {
     }
 
     protected void updateGame() {
-        game.tick();
-        mapPanel.repaint();
+        if (currentPanel == mapPanel) {
+            game.tick();
+            mapPanel.repaint();
+        }
         statusPanel.update();
     }
 

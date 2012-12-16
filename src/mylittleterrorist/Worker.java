@@ -120,9 +120,9 @@ public class Worker {
             if (!job.requiredPosition().equals(pos)) {
                 targetPos = job.requiredPosition();
             } else {
-                if (job.getProgress() == 0.0)
+                if (!job.isActivated())
                     job.activate(game, this);
-                if (job != null) // job.activate can make job null...
+                else
                     job.tick(game, this);
             }
         }

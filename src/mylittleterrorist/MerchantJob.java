@@ -5,6 +5,7 @@ import java.awt.Point;
 public class MerchantJob implements IWorkerJob {
 
     protected Point eqPos, reqPos;
+    protected boolean activated = false;
     
     public MerchantJob(int x, int y) {
         this.eqPos = new Point(x, y);
@@ -16,8 +17,12 @@ public class MerchantJob implements IWorkerJob {
     }
 
     public void activate(Game game, Worker worker) {
-        game.showWindow(new MerchantWindow());
-        worker.setJob(null);
+        game.showWindow(worker, new MerchantWindow());
+        activated = true;
+    }
+    
+    public boolean isActivated() {
+        return activated;
     }
 
     public double getProgress() {
@@ -25,7 +30,7 @@ public class MerchantJob implements IWorkerJob {
     }
 
     public void tick(Game game, Worker worker) {
-        // Nothing in this case
+        worker.setJob(null);
     }
 
     public Point equipmentPosition() {

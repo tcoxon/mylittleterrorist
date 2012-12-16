@@ -10,5 +10,6 @@ public interface IWorkerJob {
     public double getProgress();
     public void tick(Game game, Worker worker);
     public String getDescription();
+    public boolean isActivated();
     
 }
