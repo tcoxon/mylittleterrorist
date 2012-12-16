@@ -161,8 +161,11 @@ public class Game {
                 return;
             }
             
+            worker.setJob(null);
             int y = e.y, x = e.x;
             switch (t.getKind()) {
+            // TODO if the target tile contains a usable block, make worker use
+            // it
             case CRAFTING_BENCH:
             case INVENTORY:
             case SPONSOR:
@@ -172,9 +175,7 @@ public class Game {
                 y -= 1;
                 break;
             }
-            // TODO if the target tile contains a usable block, make worker use
-            // it
-            workerData.get(selectedWorker-1).setTargetPos(new Point(x, y));
+            worker.setTargetPos(new Point(x, y));
         }
     }
     
