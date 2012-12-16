@@ -264,11 +264,15 @@ public class Game {
             Worker worker = workerData.get(selectedWorker-1);
             Point target = worker.getTargetPos();
             if (target != null) {
-                AffineTransform origXfm = g.getTransform();
-                g.translate(target.x * TILE_WIDTH, target.y * TILE_HEIGHT);
                 g.setColor(Color.YELLOW);
-                g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
-                g.setTransform(origXfm);
+                g.drawRect(target.x * TILE_WIDTH, target.y * TILE_HEIGHT,
+                        TILE_WIDTH, TILE_HEIGHT);
+            }
+            if (worker.getJob() != null) {
+                Point eqPos = worker.getJob().equipmentPosition();
+                g.setColor(Color.RED);
+                g.drawRect(eqPos.x * TILE_WIDTH, eqPos.y * TILE_HEIGHT,
+                        TILE_WIDTH, TILE_HEIGHT);
             }
         }
         

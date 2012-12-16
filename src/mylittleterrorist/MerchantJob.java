@@ -4,14 +4,15 @@ import java.awt.Point;
 
 public class MerchantJob implements IWorkerJob {
 
-    protected Point pos;
+    protected Point eqPos, reqPos;
     
     public MerchantJob(int x, int y) {
-        this.pos = new Point(x+1, y);
+        this.eqPos = new Point(x, y);
+        this.reqPos = new Point(x+1, y);
     }
     
     public Point requiredPosition() {
-        return pos;
+        return reqPos;
     }
 
     public void activate(Game game, Worker worker) {
@@ -25,6 +26,10 @@ public class MerchantJob implements IWorkerJob {
 
     public void tick(Game game, Worker worker) {
         // Nothing in this case
+    }
+
+    public Point equipmentPosition() {
+        return eqPos;
     }
 
 }

@@ -4,6 +4,7 @@ import java.awt.Point;
 
 public interface IWorkerJob {
 
+    public Point equipmentPosition();
     public Point requiredPosition();
     public void activate(Game game, Worker worker);
     public double getProgress();
