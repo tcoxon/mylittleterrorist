@@ -164,4 +164,7 @@ public class Worker {
         g.drawImage(spritesheet.get(col, row), null, 0, 0);
     }
 
+    public String toString() {
+        return getName();
+    }
 }

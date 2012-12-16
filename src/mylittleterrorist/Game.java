@@ -26,10 +26,11 @@ public class Game {
     public static final int TILE_WIDTH = 52, TILE_HEIGHT = 52;
 
     protected List<InputEvent> bufferedEvents;
+
     protected GameMap map;
-    
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
+    protected int money;
     
     protected Spritesheet spritesheet;
     
@@ -79,6 +80,10 @@ public class Game {
         addWorker(Worker.Style.FEMALE);
         
         frame = 0;
+    }
+    
+    public Worker[] getWorkers() {
+        return workerData.toArray(new Worker[0]);
     }
     
     public void showWindow(IGameWindow w) {
@@ -288,4 +293,16 @@ public class Game {
         inputEvent(new InputEvent(x,y,e));
     }
 
+    public int getSelectedWorker() {
+        return selectedWorker;
+    }
+
+    public void setSelectedWorker(int i) {
+        selectedWorker = i;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+    
 }

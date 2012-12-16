@@ -14,6 +14,7 @@ public class MainApplet extends Applet {
 
     protected Timer timer;
     protected MapPanel mapPanel;
+    protected StatusPanel statusPanel;
     
     protected Game game;
     
@@ -24,7 +25,10 @@ public class MainApplet extends Applet {
     
     @Override
     public Dimension getPreferredSize() {
-        return mapPanel.getPreferredSize();
+        return new Dimension(
+                mapPanel.getPreferredSize().width +
+                    statusPanel.getPreferredSize().width,
+                mapPanel.getPreferredSize().height);
     }
 
     @Override
@@ -32,9 +36,13 @@ public class MainApplet extends Applet {
         super.init();
 
         game = new Game(this);
+        
         mapPanel = new MapPanel(game);
         setLayout(new BorderLayout());
         add(mapPanel, BorderLayout.CENTER);
+        
+        statusPanel = new StatusPanel(game);
+        add(statusPanel, BorderLayout.EAST);
         
         resize(getPreferredSize());
         
@@ -43,6 +51,7 @@ public class MainApplet extends Applet {
     protected void updateGame() {
         game.tick();
         mapPanel.repaint();
+        statusPanel.update();
     }
 
     @Override
