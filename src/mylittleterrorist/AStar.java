@@ -14,7 +14,7 @@ import java.util.TreeSet;
 
 public class AStar {
     public static interface ITile {
-        public boolean isFloor();
+        public boolean isWalkable();
     }
     
     public static interface IMap {
@@ -87,7 +87,7 @@ public class AStar {
                 
                 if (closedSet.contains(neighbor))
                     continue;
-                if (!map.get(neighbor.x, neighbor.y).isFloor())
+                if (!map.get(neighbor.x, neighbor.y).isWalkable())
                     continue;
                 
                 double dist = current.distance(neighbor);

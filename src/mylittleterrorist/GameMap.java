@@ -2,6 +2,7 @@ package mylittleterrorist;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.Random;
 
 public class GameMap implements AStar.IMap {
 
@@ -13,7 +14,7 @@ public class GameMap implements AStar.IMap {
     public GameMap() {
         mapData = new Tile[DEFAULT_WIDTH][DEFAULT_HEIGHT];
         
-        fill(Tile.Kind.FLOOR);
+        floor(Tile.Kind.FLOOR);
         wall(Tile.Kind.WALL);
         
         mapData[2][getHeight()-1] = new Tile(Tile.Kind.DOOR, 0);
@@ -50,21 +51,23 @@ public class GameMap implements AStar.IMap {
         mapData[x][y] = t;
     }
 
-    protected void fill(Tile.Kind kind) {
+    protected void floor(Tile.Kind kind) {
+        Random r = new Random();
         for (int x = 0; x < getWidth(); ++x)
         for (int y = 0; y < getHeight(); ++y) {
-            mapData[x][y] = new Tile(kind, 0);
+            mapData[x][y] = new Tile(kind, r.nextInt(4));
         }
     }
     
     protected void wall(Tile.Kind kind) {
+        Random r = new Random();
         for (int x = 0; x < getWidth(); ++x) {
-            mapData[x][0] = new Tile(kind, 0);
-            mapData[x][getHeight()-1] = new Tile(kind, 0);
+            mapData[x][0] = new Tile(kind, r.nextInt(8));
+            mapData[x][getHeight()-1] = new Tile(kind, r.nextInt(8));
         }
         for (int y = 0; y < getHeight(); ++y) {
-            mapData[0][y] = new Tile(kind, 0);
-            mapData[getWidth()-1][y] = new Tile(kind, 0);
+            mapData[0][y] = new Tile(kind, r.nextInt(8));
+            mapData[getWidth()-1][y] = new Tile(kind, r.nextInt(8));
         }
     }
 

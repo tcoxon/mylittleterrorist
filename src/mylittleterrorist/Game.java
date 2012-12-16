@@ -137,13 +137,18 @@ public class Game {
         
         if (e.mouseButton == 1) {
             // (Un)select workers to command
-            if (t.getKind() == Tile.Kind.WORKER) {
-                if (selectedWorker != t.getExtraData()) {
-                    selectedWorker = t.getExtraData();
+            boolean clickedOne = false;
+            for (Worker worker: workerData) {
+                if (worker.getPos().x != e.x || worker.getPos().y != e.y)
+                    continue;
+                if (selectedWorker != worker.id) {
+                    selectedWorker = worker.id;
                 } else {
                     selectedWorker = 0;
                 }
-            } else {
+                clickedOne = true;
+            }
+            if (!clickedOne) {
                 selectedWorker = 0;
             }
         }
@@ -188,8 +193,7 @@ public class Game {
         }
     }
     
-    protected void renderWorker(Graphics2D g, Tile tile) {
-        Worker worker = workerData.get(tile.getExtraData()-1);
+    protected void renderWorker(Graphics2D g, Worker worker) {
         
         int tween = worker.getTweenFrames();
         if (tween != 0) {
@@ -202,6 +206,13 @@ public class Game {
         }
         
         worker.render(g, spritesheet);
+
+        // Draw a green box around selected workers
+        if (selectedWorker == worker.id) {
+            g.setColor(Color.GREEN);
+            g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
+        }
+        
     }
     
     protected void renderTile(Graphics2D g, Tile tile) {
@@ -225,22 +236,13 @@ public class Game {
         }
         
         // Layer 2: WORKERs
-        for (int x = 0; x < map.getWidth(); ++x)
-        for (int y = 0; y < map.getHeight(); ++y) {
-            Tile tile = map.get(x,y);
-            
-            if (tile.getKind() != Tile.Kind.WORKER) continue;
-            
+        for (Worker worker: workerData) {
+            if (!worker.isOnScreen()) continue;
             AffineTransform origXfm = g.getTransform();
-            g.translate(x * TILE_WIDTH, y * TILE_HEIGHT);
-            renderWorker(g, tile);
-            
-            // Draw a green box around selected workers
-            if (selectedWorker == tile.getExtraData()) {
-                g.setColor(Color.GREEN);
-                g.drawRect(0, 0, TILE_WIDTH-1, TILE_HEIGHT-1);
-            }
-            
+            g.translate(
+                    worker.getPos().x * TILE_WIDTH,
+                    worker.getPos().y * TILE_HEIGHT);
+            renderWorker(g, worker);
             g.setTransform(origXfm);
         }
         

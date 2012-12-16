@@ -65,11 +65,8 @@ public class Worker {
             Point entrance = map.getWorkerEntrance();
             if (map.get(entrance.x, entrance.y-1).getKind() ==
                     Tile.Kind.FLOOR) {
-                map.set(entrance.x, entrance.y-1,
-                        new Tile(Tile.Kind.WORKER, id));
-                prevPos = new Point(entrance.x, entrance.y);
-                pos = new Point(entrance.x, entrance.y-1);
-                tweenFrames = MAX_TWEEN_FRAMES;
+                pos = new Point(entrance.x, entrance.y);
+                moveTo(map, entrance.x, entrance.y-1);
             }
             
             // TODO: send worker to inventory if carrying something
@@ -78,7 +75,7 @@ public class Worker {
                     map.getWidth()*map.getHeight());
             for (int x = 0; x < map.getWidth(); ++x)
             for (int y = 0; y < map.getHeight(); ++y) {
-                if (map.get(x,y).isFloor())
+                if (map.get(x,y).isWalkable())
                     floorTiles.add(new Point(x,y));
             }
             if (floorTiles.size() != 0) {
@@ -89,9 +86,8 @@ public class Worker {
     }
     
     protected void moveTo(GameMap map, int x, int y) {
-        Tile workerTile = map.get(pos.x, pos.y);
-        map.set(x, y, workerTile);
-        map.set(pos.x, pos.y, new Tile(Tile.Kind.FLOOR, 0));
+        map.get(pos.x, pos.y).setOccupied(false);
+        map.get(x, y).setOccupied(true);
         prevPos = pos;
         pos = new Point(x,y);
         tweenFrames = MAX_TWEEN_FRAMES;

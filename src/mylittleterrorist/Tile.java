@@ -6,24 +6,29 @@ public class Tile implements AStar.ITile {
 
     public static enum Kind {
         FLOOR, WALL, DOOR, CRAFTING_BENCH, INVENTORY,
-        WORKER, SPONSOR, MERCHANT
+        SPONSOR, MERCHANT
     }
 
     protected Kind kind;
     protected int extraData;
+    protected boolean occupied;
 
     public Tile(Kind kind, int extraData) {
         this.kind = kind;
         this.extraData = extraData;
+        this.occupied = false;
     }
     
-    public boolean isFloor() {
-        switch (kind) {
-        case FLOOR:
-            return true;
-        default:
-            return false;
-        }
+    public boolean isOccupied() {
+        return occupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        this.occupied = occupied;
+    }
+
+    public boolean isWalkable() {
+        return kind == Kind.FLOOR && !occupied;
     }
 
     public Kind getKind() {
@@ -44,14 +49,14 @@ public class Tile implements AStar.ITile {
 
     public void render(Graphics2D g, Spritesheet spritesheet, int frame) {
         switch (kind) {
-        case WORKER:
-            // Just draw floor here. The actual worker is rendered by the
-            // Worker class.
         case FLOOR:
-            g.drawImage(spritesheet.get(0, 3), null, 0, 0);
+            g.drawImage(spritesheet.get(extraData, 3), null, 0, 0);
             break;
         case WALL:
-            g.drawImage(spritesheet.get(4, 3), null, 0, 0);
+            if (extraData >= 4)
+                g.drawImage(spritesheet.get(4 + extraData % 4, 4), null, 0, 0);
+            else
+                g.drawImage(spritesheet.get(4 + extraData % 4, 3), null, 0, 0);
             break;
         case DOOR:
             g.drawImage(spritesheet.get(0, 4), null, 0, 0);
