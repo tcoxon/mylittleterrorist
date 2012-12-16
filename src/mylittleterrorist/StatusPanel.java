@@ -103,8 +103,12 @@ public class StatusPanel extends JPanel {
             add(detailPanel, BorderLayout.SOUTH);
             
             selectionNameLabel.setText(sel.getName());
-            selectionStatusLabel.setText(sel.getJobDescription());
-            // TODO display name of the object worker is holding
+            selectionStatusLabel.setText(
+                    "<html>"+sel.getJobDescription()+"<br/><br/>"+
+                    (sel.getHolding() == null
+                        ? ""
+                        : "<b>Holding: "+sel.getHolding().name+"</b></br>")+
+                    "</html>");
             selectionCancelJobButton.setVisible(sel.getJob() != null);
         } else {
             remove(detailPanel);
