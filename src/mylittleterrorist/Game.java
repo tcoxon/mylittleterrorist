@@ -30,7 +30,7 @@ public class Game {
     protected GameMap map;
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
-    protected int money;
+    protected int money, renown;
     
     protected Spritesheet spritesheet;
     
@@ -132,15 +132,28 @@ public class Game {
 
     protected synchronized void handleEvents() {
         for (InputEvent ie: bufferedEvents) {
-            handleEvent(ie);
+            switch (ie.kind) {
+            case CLICK:
+                handleClick(ie);
+                break;
+            case JOB_CANCEL:
+                getSelectedWorker().setJob(null);
+                getSelectedWorker().setTargetPos(null);
+                break;
+            case SELECT_WORKER:
+                selectedWorker = ie.arg;
+                break;
+            default:
+                throw new RuntimeException("Unhandle event kind");
+            }
         }
         bufferedEvents.clear();
     }
     
-    protected void handleEvent(InputEvent e) {
+    protected void handleClick(InputEvent e) {
         Tile t = map.get(e.x, e.y);
         
-        if (e.mouseButton == 1) {
+        if (e.arg == 1) {
             // (Un)select workers to command
             boolean clickedOne = false;
             for (Worker worker: workerData) {
@@ -158,7 +171,7 @@ public class Game {
             }
         }
         
-        if (e.mouseButton == 3 && selectedWorker != 0) {
+        if (e.arg == 3 && selectedWorker != 0) {
             Worker worker = workerData.get(selectedWorker-1);
             switch (t.getKind()) {
             case MERCHANT:
@@ -293,16 +306,21 @@ public class Game {
         inputEvent(new InputEvent(x,y,e));
     }
 
-    public int getSelectedWorker() {
+    public int getSelectedWorkerIndex() {
         return selectedWorker;
     }
 
-    public void setSelectedWorker(int i) {
-        selectedWorker = i;
+    public Worker getSelectedWorker() {
+        if (selectedWorker == 0) return null;
+        return workerData.get(selectedWorker-1);
     }
 
     public int getMoney() {
         return money;
+    }
+
+    public int getRenown() {
+        return renown;
     }
     
 }

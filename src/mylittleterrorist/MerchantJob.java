@@ -32,4 +32,8 @@ public class MerchantJob implements IWorkerJob {
         return eqPos;
     }
 
+    public String getDescription() {
+        return "Contacting arms dealer";
+    }
+
 }

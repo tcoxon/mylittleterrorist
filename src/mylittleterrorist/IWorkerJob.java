@@ -9,5 +9,6 @@ public interface IWorkerJob {
     public void activate(Game game, Worker worker);
     public double getProgress();
     public void tick(Game game, Worker worker);
+    public String getDescription();
     
 }

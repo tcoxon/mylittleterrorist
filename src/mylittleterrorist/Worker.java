@@ -167,4 +167,12 @@ public class Worker {
     public String toString() {
         return getName();
     }
+    
+    public String getJobDescription() {
+        if (job != null) {
+            return job.getDescription();
+        } else {
+            return "Idle";
+        }
+    }
 }
