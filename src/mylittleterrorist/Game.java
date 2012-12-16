@@ -66,6 +66,7 @@ public class Game {
                 t.setExtraData(count++);
             }
         }
+        
         inventory = new InventorySlot[count];
         for (int i = 0; i < count; ++i) {
             inventory[i] = new InventorySlot();
@@ -181,6 +182,9 @@ public class Game {
             case MERCHANT:
                 worker.setJob(new MerchantJob(e.x, e.y));
                 return;
+            case INVENTORY:
+                setWorkerJobInventory(worker, e.x, e.y);
+                return;
             }
             
             worker.setJob(null);
@@ -189,7 +193,6 @@ public class Game {
             // TODO if the target tile contains a usable block, make worker use
             // it
             case CRAFTING_BENCH:
-            case INVENTORY:
             case SPONSOR:
                 y += 1;
                 break;
@@ -201,6 +204,16 @@ public class Game {
         }
     }
     
+    protected void setWorkerJobInventory(Worker worker, int x, int y) {
+        InventorySlot slot = inventory[map.get(x,y).getExtraData()];
+        if (worker.getHolding() == null && slot.getItem() != null) {
+            worker.setJob(new InventoryRetrieveJob(x, y, slot.getItem()));
+        } else if (worker.getHolding() != null && (slot.getItem() == null ||
+                slot.getItem() == worker.getHolding())) {
+            worker.setJob(new InventoryStorageJob(x, y, worker.getHolding()));
+        }
+    }
+
     public GameMap getMap() {
         return map;
     }
@@ -329,6 +342,10 @@ public class Game {
 
     public int getRenown() {
         return renown;
+    }
+
+    public InventorySlot[] getInventory() {
+        return inventory;
     }
     
 }

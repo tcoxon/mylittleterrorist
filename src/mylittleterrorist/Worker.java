@@ -21,6 +21,7 @@ public class Worker {
     protected Point pos = null, prevPos = null, targetPos = null;
     protected int tweenFrames = 0;
     protected Style style;
+    protected Item holding;
     
     public Worker(int id, Style style) {
         this.id = id;
@@ -162,6 +163,10 @@ public class Worker {
         if (tweenFrames >= MAX_TWEEN_FRAMES/2)
             ++col;
         g.drawImage(spritesheet.get(col, row), null, 0, 0);
+        
+        if (holding != null) {
+            holding.render(g);
+        }
     }
 
     public String toString() {
@@ -174,5 +179,13 @@ public class Worker {
         } else {
             return "Idle";
         }
+    }
+
+    public Item getHolding() {
+        return holding;
+    }
+
+    public void setHolding(Item holding) {
+        this.holding = holding;
     }
 }

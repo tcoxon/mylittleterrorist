@@ -4,15 +4,17 @@ import java.awt.*;
 
 public enum Item {
 
-    COAL("C", 5),
-    SULPHUR("S", 5),
-    FERTILIZER("F", 5),
-    BOMB("B", 20);
+    COAL("Coal", "C", 5),
+    SULPHUR("Sulphur", "S", 5),
+    FERTILIZER("Fertilizer", "F", 5),
+    BOMB("Bomb", "B", 20);
     
+    public final String name;
     protected final String graphic;
     public final int cost;
     
-    private Item(String graphic, int cost) {
+    private Item(String name, String graphic, int cost) {
+        this.name = name;
         this.graphic = graphic;
         this.cost = cost;
     }

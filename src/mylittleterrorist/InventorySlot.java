@@ -30,6 +30,14 @@ public class InventorySlot {
         if (count == 0) item = null;
     }
     
+    public void decrease() {
+        setCount(count-1);
+    }
+    
+    public void increase() {
+        setCount(count+1);
+    }
+    
     public void render(Graphics2D g) {
         if (item != null) {
             item.render(g);
