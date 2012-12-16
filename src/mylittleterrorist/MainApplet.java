@@ -28,13 +28,19 @@ public class MainApplet extends Applet {
     public void destroy() {
         super.destroy();
     }
+    
+    @Override
+    public Dimension getPreferredSize() {
+        return game.getPixelSize();
+    }
 
     @Override
     public void init() {
         super.init();
-        resize(624, 468);
-        
+
         game = new Game(this);
+        
+        resize(getPreferredSize());
         
         this.addMouseListener(new MouseAdapter() {
 
