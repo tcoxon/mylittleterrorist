@@ -34,7 +34,7 @@ public class Game {
         applet = a;
 
         try {
-            spritesheet = new Spritesheet("/sprites/spritesheet.png",
+            spritesheet = Spritesheet.get("/sprites/spritesheet.png",
                 TILE_WIDTH, TILE_HEIGHT);
         } catch (IOException e) {
             System.err.println("Unable to load spritesheet:");

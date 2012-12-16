@@ -4,18 +4,17 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
 public class Spritesheet {
-
+    
     protected BufferedImage sheet;
     protected int tileW, tileH;
     protected Map<Point, BufferedImage> tileCache;
     
-    public Spritesheet(String file, int tileW, int tileH) throws IOException {
+    protected Spritesheet(String file, int tileW, int tileH) throws IOException {
         this.tileW = tileW;
         this.tileH = tileH;
         sheet = ImageIO.read(Spritesheet.class.getResource(file));
@@ -38,4 +37,15 @@ public class Spritesheet {
         return tile;
     }
 
+    protected static final Map<String, Spritesheet> SHEETS =
+            new HashMap<String, Spritesheet>();
+    
+    public static Spritesheet get(String file, int tileW, int tileH)
+            throws IOException {
+        
+        if (SHEETS.get(file) == null)
+            SHEETS.put(file, new Spritesheet(file, tileW, tileH));
+        return SHEETS.get(file);
+        
+    }
 }
