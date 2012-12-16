@@ -55,6 +55,9 @@ public class Game {
         setupInventory();
         
         frame = 0;
+        
+        money = 4000;
+        renown = 0;
     }
     
     protected void setupInventory() {
@@ -114,7 +117,7 @@ public class Game {
         JPanel innerPanel = new JPanel();
         panel.add(innerPanel, BorderLayout.CENTER);
         
-        w.create(innerPanel);
+        w.create(this, innerPanel);
         
         currentWindow = panel;
         applet.showPanel(panel);
@@ -346,6 +349,29 @@ public class Game {
 
     public InventorySlot[] getInventory() {
         return inventory;
+    }
+
+    public boolean buy(Item item) {
+        if (money >= item.cost) {
+            // First try to put it into a slot with the same kind of item
+            for (InventorySlot slot: inventory) {
+                if (slot.getItem() == item) {
+                    slot.increase();
+                    money -= item.cost;
+                    return true;
+                }
+            }
+            
+            // Otherwise, try to put it into an empty slot
+            for (InventorySlot slot: inventory) {
+                if (slot.getItem() == null) {
+                    slot.set(item, 1);
+                    money -= item.cost;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
 }
