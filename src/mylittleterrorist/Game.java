@@ -1,23 +1,15 @@
 package mylittleterrorist;
 
 import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import mylittleterrorist.Worker.Style;
 
@@ -35,7 +27,7 @@ public class Game {
     protected Spritesheet spritesheet;
     
     protected Applet applet;
-    protected JPanel currentWindow;
+    protected Window currentWindow;
     protected Action currentWindowCloseAction;
     
     protected int frame;
@@ -87,32 +79,36 @@ public class Game {
     }
     
     public void showWindow(IGameWindow w) {
-        if (currentWindow != null) applet.remove(currentWindow);
+        if (currentWindow != null) currentWindow.setVisible(false);
         
+        final JDialog dlg = new JDialog((Frame)null, w.getTitle(), true);
         final JPanel panel = new JPanel(new BorderLayout());
-        panel.setMinimumSize(w.getSize());
+        panel.setPreferredSize(w.getSize());
+        dlg.setLayout(new BorderLayout());
+        dlg.add(panel, BorderLayout.CENTER);
         
-        JLabel label = new JLabel(w.getTitle());
-        panel.add(label, BorderLayout.NORTH);
+        w.create(panel);
         
-        JPanel inner = new JPanel();
-        w.create(inner);
-        panel.add(inner, BorderLayout.CENTER);
+        dlg.pack();
+        dlg.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                currentWindow = null;
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                super.windowLostFocus(e);
+                dlg.setVisible(false);
+            }
+            
+            
+            
+        });
+        currentWindow = dlg;
+        dlg.setVisible(true);
         
-        JPanel footer = new JPanel(new BorderLayout());
-        JButton close = new JButton("Close");
-        close.setAction(currentWindowCloseAction);
-        footer.add(close, BorderLayout.EAST);
-        panel.add(footer, BorderLayout.SOUTH);
-        
-        panel.setBounds(
-                (applet.getWidth()-w.getSize().width)/2,
-                (applet.getHeight()-w.getSize().height)/2,
-                w.getSize().width,
-                w.getSize().height);
-        
-        currentWindow = panel;
-        applet.add(panel);
     }
     
     public void addWorker(Style style) {

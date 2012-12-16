@@ -7,11 +7,11 @@ import javax.swing.JPanel;
 public class MerchantWindow implements IGameWindow {
 
     public Dimension getSize() {
-        return new Dimension(500, 200);
+        return new Dimension(500, 400);
     }
 
     public String getTitle() {
-        return "\"See anything you like?\" ;)";
+        return "Arms Dealer";
     }
 
     public void create(JPanel panel) {
