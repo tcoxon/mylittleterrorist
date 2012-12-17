@@ -57,7 +57,7 @@ public class Game {
         frame = 0;
         
         money = 4000;
-        renown = 0;
+        renown = 10;
     }
     
     protected void setupInventory() {
@@ -83,6 +83,10 @@ public class Game {
     
     public Worker[] getWorkers() {
         return workerData.toArray(new Worker[0]);
+    }
+    
+    public void closeWindow() {
+        applet.showMapPanel();
     }
     
     public void showWindow(Worker worker, IGameWindow w) {
@@ -231,7 +235,7 @@ public class Game {
     }
     
     protected void updateWorkers() {
-        for (Worker worker: workerData) {
+        for (Worker worker: new ArrayList<Worker>(workerData)) {
             worker.update(this);
         }
     }

@@ -52,6 +52,7 @@ public class Worker {
 
     public void setJob(IWorkerJob job) {
         this.job = job;
+        this.setTargetPos(null);
     }
 
     public boolean isOnScreen() {
@@ -93,6 +94,12 @@ public class Worker {
         pos = new Point(x,y);
         tweenFrames = MAX_TWEEN_FRAMES;
     }
+    
+    protected void moveOffScreen(GameMap map) {
+        map.get(pos.x, pos.y).setOccupied(false);
+        prevPos = pos;
+        pos = null;
+    }
 
     public Point getPrevPos() {
         return prevPos;
@@ -133,7 +140,7 @@ public class Worker {
         else
             updateOffScreen(game);
 
-        if (job != null) {
+        if (job != null && tweenFrames == 0) {
             if (!job.isActivated()) {
                 if (!job.requiredPosition().equals(pos)) {
                     targetPos = job.requiredPosition();
@@ -191,7 +198,4 @@ public class Worker {
         this.holding = holding;
     }
 
-    public void setPos(Point p) {
-        this.pos = p;
-    }
 }

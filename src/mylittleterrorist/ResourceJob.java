@@ -17,11 +17,19 @@ public class ResourceJob implements IWorkerJob {
     protected boolean activated;
     
     public ResourceJob(int x, int y) {
+        this(x, y, EnumSet.noneOf(Resource.class));
+    }
+    
+    public ResourceJob(int x, int y, Set<Resource> kinds) {
         this.x = x;
         this.y = y;
-        this.kinds = EnumSet.noneOf(Resource.class);
+        this.kinds = kinds;
         this.progress = 0;
         this.activated = false;
+    }
+    
+    public Set<Resource> getKinds() {
+        return kinds;
     }
 
     public Point equipmentPosition() {
@@ -33,9 +41,10 @@ public class ResourceJob implements IWorkerJob {
     }
 
     public void activate(Game game, Worker worker) {
-        worker.setPos(null);
+        worker.moveOffScreen(game.getMap());
         activated = true;
-        game.showWindow(worker, new ResourceSelectWindow(this));
+        if (kinds.size() == 0)
+            game.showWindow(worker, new ResourceSelectWindow(this));
     }
 
     public double getProgress() {
@@ -84,12 +93,12 @@ public class ResourceJob implements IWorkerJob {
         String result = "Gathering ";
         int i = 0;
         for (Resource res: kinds) {
-            if (i == kinds.size()-1) {
-                result += "and ";
+            if (i == kinds.size()-1 && i != 0) {
+                result += " and ";
             } else if (i != 0) {
                 result += ", ";
             }
-            result += res.name + " ";
+            result += res.name;
             ++i;
         }
         return result;
