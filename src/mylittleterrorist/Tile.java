@@ -47,7 +47,9 @@ public class Tile implements AStar.ITile {
         this.extraData = extraData;
     }
 
-    public void render(Graphics2D g, Spritesheet spritesheet, int frame) {
+    public void render(Graphics2D g, Game game, Spritesheet spritesheet,
+            int frame) {
+        
         switch (kind) {
         case FLOOR:
             g.drawImage(spritesheet.get(extraData, 3), null, 0, 0);
@@ -65,13 +67,12 @@ public class Tile implements AStar.ITile {
             g.drawImage(spritesheet.get(3, 4), null, 0, 0);
             break;
         case INVENTORY:
-            // TODO draw the item it holds on top
             g.drawImage(spritesheet.get(2, 4), null, 0, 0);
             break;
         case SPONSOR:
-            // TODO display shadowy figure in screen
             g.drawImage(spritesheet.get(0, 3), null, 0, 0); // FLOOR
-            g.drawImage(spritesheet.get((frame>>2)%4, 2), null, 0, 0);
+            g.drawImage(spritesheet.get((frame>>2)%4
+                    + (game.hasSponsors() ? 4 : 0), 2), null, 0, 0);
             break;
         case MERCHANT:
             g.drawImage(spritesheet.get(0, 3), null, 0, 0); // FLOOR

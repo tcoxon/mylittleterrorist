@@ -23,6 +23,7 @@ public class Game {
     protected int selectedWorker = 0;
     protected int money, renown;
     protected InventorySlot[] inventory, crafting;
+    protected List<Sponsor> sponsors;
     
     protected Spritesheet spritesheet;
     
@@ -52,12 +53,15 @@ public class Game {
         addWorker(Worker.Style.MALE);
         addWorker(Worker.Style.FEMALE);
         
+        sponsors = new ArrayList<Sponsor>();
+        sponsors.add(new Sponsor("Osama", 25));
+        
         setupInventory();
         
         frame = 0;
         
-        money = 4000;
-        renown = 1000;
+        money = 10;
+        renown = 10;
     }
     
     protected void setupInventory() {
@@ -206,18 +210,12 @@ public class Game {
             case CRAFTING_BENCH:
                 setWorkerJobCrafting(worker, e.x, e.y);
                 return;
-            }
-            
-            worker.setJob(null);
-            int y = e.y, x = e.x;
-            switch (t.getKind()) {
-            // TODO if the target tile contains a usable block, make worker use
-            // it
             case SPONSOR:
-                y += 1;
-                break;
+                worker.setJob(new SponsorJob(e.x, e.y));
+                return;
             }
-            worker.setTargetPos(new Point(x, y));
+
+            worker.setTargetPos(new Point(e.x, e.y));
         }
     }
     
@@ -279,7 +277,7 @@ public class Game {
     }
     
     protected void renderTile(Graphics2D g, Tile tile) {
-        tile.render(g, spritesheet, frame);
+        tile.render(g, this, spritesheet, frame);
         if (tile.getKind() == Tile.Kind.INVENTORY) {
             InventorySlot slot = inventory[tile.getExtraData()];
             slot.render(g);
@@ -434,6 +432,14 @@ public class Game {
 
     public InventorySlot[] getCrafting() {
         return crafting;
+    }
+
+    public List<Sponsor> getSponsors() {
+        return sponsors;
+    }
+    
+    public boolean hasSponsors() {
+        return sponsors.size() > 0;
     }
     
 }
