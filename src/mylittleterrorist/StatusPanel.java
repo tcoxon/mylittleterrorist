@@ -34,11 +34,21 @@ public class StatusPanel extends JPanel {
         setLayout(layout);
         
         JPanel counterPanel = new JPanel();
-        counterPanel.setLayout(new BoxLayout(counterPanel, BoxLayout.Y_AXIS));
+        counterPanel.setLayout(new BorderLayout(5,5));
+        JButton helpBtn = new JButton("Help");
+        helpBtn.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                game.showWindow(null, new HelpWindow());
+            }
+            
+        });
+        counterPanel.add(helpBtn, BorderLayout.NORTH);
         moneyLabel = new JLabel("Money: $0");
-        counterPanel.add(moneyLabel);
+        counterPanel.add(moneyLabel, BorderLayout.CENTER);
         renownLabel = new JLabel("Notoriety: 0");
-        counterPanel.add(renownLabel);
+        counterPanel.add(renownLabel, BorderLayout.SOUTH);
         add(counterPanel, BorderLayout.NORTH);
         
         workerList = new JList(game.getWorkers());

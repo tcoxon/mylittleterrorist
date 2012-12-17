@@ -39,6 +39,7 @@ public class Game {
     protected JPanel currentWindow;
     
     protected int frame;
+    protected boolean firstTick = true;
     
     public Game(MainApplet a) {
         applet = a;
@@ -59,7 +60,7 @@ public class Game {
         frame = 0;
         
         money = 20;
-        renown = 1;
+        renown = 10;
         
         workerData = new ArrayList<Worker>(20);
         addWorker(Worker.Style.MALE);
@@ -279,6 +280,10 @@ public class Game {
         if (r.nextInt(DIFFICULTY) == 0) {
             setRenown(getRenown() - 1);
         }
+        
+        if (firstTick)
+            showWindow(null, new HelpWindow());
+        firstTick = false;
     }
     
     protected void updateWorkers() {

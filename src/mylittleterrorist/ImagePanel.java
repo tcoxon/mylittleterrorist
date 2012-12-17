@@ -25,4 +25,9 @@ public class ImagePanel extends JPanel {
         g.drawImage(img, 0, 0, this);
     }
 
+    @Override
+    public Dimension getMaximumSize() {
+        return getPreferredSize();
+    }
+
 }
