@@ -203,6 +203,9 @@ public class Game {
             case DOOR:
                 worker.setJob(new ResourceJob(e.x, e.y));
                 return;
+            case CRAFTING_BENCH:
+                setWorkerJobCrafting(worker, e.x, e.y);
+                return;
             }
             
             worker.setJob(null);
@@ -212,10 +215,6 @@ public class Game {
             // it
             case SPONSOR:
                 y += 1;
-                break;
-            case CRAFTING_BENCH:
-            case DOOR:
-                y -= 1;
                 break;
             }
             worker.setTargetPos(new Point(x, y));
@@ -232,6 +231,16 @@ public class Game {
         }
     }
 
+    protected void setWorkerJobCrafting(Worker worker, int x, int y) {
+        InventorySlot slot = crafting[map.get(x,y).getExtraData()];
+        if (worker.getHolding() == null && slot.getItem() != null) {
+            worker.setJob(new CraftingRetrieveJob(x, y, slot.getItem()));
+        } else if (worker.getHolding() != null && (slot.getItem() == null ||
+                slot.getItem() == worker.getHolding())) {
+            worker.setJob(new CraftingStorageJob(x, y, worker.getHolding()));
+        }
+    }
+    
     public GameMap getMap() {
         return map;
     }
@@ -273,6 +282,10 @@ public class Game {
         tile.render(g, spritesheet, frame);
         if (tile.getKind() == Tile.Kind.INVENTORY) {
             InventorySlot slot = inventory[tile.getExtraData()];
+            slot.render(g);
+        }
+        if (tile.getKind() == Tile.Kind.CRAFTING_BENCH) {
+            InventorySlot slot = crafting[tile.getExtraData()];
             slot.render(g);
         }
     }
@@ -417,6 +430,10 @@ public class Game {
     
     public int getMaxWorkers() {
         return 3 + renown/50;
+    }
+
+    public InventorySlot[] getCrafting() {
+        return crafting;
     }
     
 }

@@ -29,11 +29,15 @@ public class InventoryRetrieveJob implements IWorkerJob {
     public double getProgress() {
         return 0;
     }
+    
+    protected InventorySlot getSlot(Game game, int i) {
+        return game.getInventory()[i];
+    }
 
     public void tick(Game game, Worker worker) {
         GameMap map = game.getMap();
         Tile t = map.get(x,y);
-        InventorySlot slot = game.getInventory()[t.getExtraData()];
+        InventorySlot slot = getSlot(game, t.getExtraData());
         if (slot.item == item) {
             worker.setHolding(item);
             slot.decrease();

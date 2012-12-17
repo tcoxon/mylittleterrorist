@@ -35,19 +35,27 @@ public class InventoryStorageJob implements IWorkerJob {
     public double getProgress() {
         return 0;
     }
+    
+    protected void success(Game game, Worker worker) {
+        worker.setJob(after);
+    }
 
+    protected InventorySlot getSlot(Game game, int i) {
+        return game.getInventory()[i];
+    }
+    
     public void tick(Game game, Worker worker) {
         GameMap map = game.getMap();
         Tile t = map.get(x,y);
-        InventorySlot slot = game.getInventory()[t.getExtraData()];
+        InventorySlot slot = getSlot(game, t.getExtraData());
         if (slot.item == item) {
             worker.setHolding(null);
             slot.increase();
-            worker.setJob(after);
+            success(game, worker);
         } else if (slot.item == null) {
             worker.setHolding(null);
             slot.set(item, 1);
-            worker.setJob(after);
+            success(game, worker);
         } else {
             worker.setJob(null);
         }
