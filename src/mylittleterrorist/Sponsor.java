@@ -8,12 +8,12 @@ public class Sponsor {
     protected final int value, renown;
     protected final long by;
     protected InventorySlot[] required, rewards;
-    protected boolean suicide;
+    protected boolean suicide, spam;
     
     // 'duration' is in seconds
     public Sponsor(String name, String subject,
             InventorySlot[] required, InventorySlot[] rewards, boolean suicide,
-            int value, int renown, int duration) {
+            int value, int renown, int duration, boolean spam) {
         this.name = name;
         this.subject = subject;
         this.required = required;
@@ -22,6 +22,7 @@ public class Sponsor {
         this.value = value;
         this.renown = renown;
         this.by = new Date().getTime() + duration*1000;
+        this.spam = spam;
     }
     
     public String getSubject() {
@@ -59,22 +60,26 @@ public class Sponsor {
     public String getHTMLBody() {
         String html = "<html>" +
                 "<br/>";
-        if (required.length > 0 || suicide) {
+        if (required.length > 0 || suicide || value < 0) {
             html += "<b>Requires:</b><ul>";
             for (InventorySlot s: required) {
                 html += "<li>"+s+"</li>";
             }
             if (suicide)
                 html += "<li>1x Suicide</li>";
+            if (value < 0)
+                html += "<li>$"+(-value)+"</li>";
             html += "</ul>";
         }
-        if (rewards.length > 0 || value != 0) {
+        if (rewards.length > 0 || value > 0 || spam) {
             html += "<b>Rewards:</b><ul>";
             for (InventorySlot s: rewards) {
                 html += "<li>"+s+"</li>";
             }
-            if (value != 0)
+            if (value > 0)
                 html += "<li>$"+value+"</li>";
+            if (spam)
+                html += "<li>Bigger penis</li>";
             html += "</ul>";
         }
         return html;

@@ -126,54 +126,48 @@ public enum Plot {
         rewards = new InventorySlot[]{};
     }},
     
+    VIAGRA {{
+        senders = new String[]{ "Big Bob", "xxx@hotmail.com" };
+        subjects = new String[]{ "Need a bigger penis?",
+                "Cheap Viagra!",
+                "c1al!s SALE"};
+        locations = new String[]{ "Hotmail" };
+        value = -1;
+        duration = 30;
+        requiredRenown = 0;
+        gainedRenown = 0;
+        spam = true;
+        required = new InventorySlot[]{};
+        rewards = new InventorySlot[]{};
+    }},
+    
     ;
     
     protected String[] senders, subjects, locations;
     protected int value, duration, requiredRenown, gainedRenown;
-    protected boolean suicide;
+    protected boolean suicide, spam;
     protected InventorySlot[] required, rewards;
     
     public String[] getSenders() {
         return senders;
     }
-    public void setSenders(String[] senders) {
-        this.senders = senders;
-    }
     public String[] getSubjects() {
         return subjects;
-    }
-    public void setSubjects(String[] subjects) {
-        this.subjects = subjects;
     }
     public String[] getLocations() {
         return locations;
     }
-    public void setLocations(String[] locations) {
-        this.locations = locations;
-    }
     public int getValue() {
         return value;
-    }
-    public void setValue(int value) {
-        this.value = value;
     }
     public int getDuration() {
         return duration;
     }
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
     public int getRequiredRenown() {
         return requiredRenown;
     }
-    public void setRequiredRenown(int requiredRenown) {
-        this.requiredRenown = requiredRenown;
-    }
     public int getGainedRenown() {
         return gainedRenown;
-    }
-    public void setGainedRenown(int gainedRenown) {
-        this.gainedRenown = gainedRenown;
     }
     
     protected<T> T randomElem(T[] vals) {
@@ -185,7 +179,7 @@ public enum Plot {
                 randomElem(senders),
                 String.format(randomElem(subjects), randomElem(locations)),
                 required, rewards, suicide,
-                value, gainedRenown, duration
+                value, gainedRenown, duration, spam
                 );
         return sponsor;
     }
@@ -201,5 +195,18 @@ public enum Plot {
         Random r = new Random();
         Plot plot = plots.get(r.nextInt(plots.size()));
         return plot.makeSponsor();
+    }
+    
+    public boolean isSuicide() {
+        return suicide;
+    }
+    public boolean isSpam() {
+        return spam;
+    }
+    public InventorySlot[] getRequired() {
+        return required;
+    }
+    public InventorySlot[] getRewards() {
+        return rewards;
     }
 }

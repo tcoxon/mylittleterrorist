@@ -486,11 +486,12 @@ public class Game {
     
     public boolean startOrder(Sponsor sponsor, Worker worker) {
         if (!canExecuteOrder(sponsor)) return false;
+        sponsors.remove(sponsor);
         if (sponsor.isSuicide()) {
             Point entrance = map.getWorkerEntrance();
             worker.setJob(new SuicideJob(entrance.x, entrance.y, sponsor));
         } else {
-            executeOrder(sponsor);
+            return executeOrder(sponsor);
         }
         return true;
     }
