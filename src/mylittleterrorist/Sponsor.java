@@ -1,13 +1,18 @@
 package mylittleterrorist;
 
+import java.util.Date;
+
 public class Sponsor {
 
-    protected String name;
-    protected int value;
+    protected final String name;
+    protected final int value;
+    protected final long by;
     
-    public Sponsor(String name, int value) {
+    // 'duration' is in seconds
+    public Sponsor(String name, int value, int duration) {
         this.name = name;
         this.value = value;
+        this.by = new Date().getTime() + duration*1000;
     }
 
     public String getName() {
@@ -16,6 +21,22 @@ public class Sponsor {
 
     public int getValue() {
         return value;
+    }
+    
+    public long getMSLeft() {
+        return by - new Date().getTime();
+    }
+    
+    public String getTimeLeft() {
+        long seconds = (getMSLeft())/1000;
+        if (seconds <= 0) return "0:00";
+        long minutes = seconds/60;
+        seconds %= 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
+    
+    public String toString() {
+        return name;
     }
 
 }

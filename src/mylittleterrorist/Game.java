@@ -54,7 +54,7 @@ public class Game {
         addWorker(Worker.Style.FEMALE);
         
         sponsors = new ArrayList<Sponsor>();
-        sponsors.add(new Sponsor("Osama", 25));
+        sponsors.add(new Sponsor("Osama", 25, 30));
         
         setupInventory();
         
@@ -246,6 +246,11 @@ public class Game {
     public synchronized void tick() {
         handleEvents();
         updateWorkers();
+        
+        for (Sponsor sponsor: new ArrayList<Sponsor>(sponsors)) {
+            if (sponsor.getMSLeft() <= 0)
+                sponsors.remove(sponsor);
+        }
     }
     
     protected void updateWorkers() {
