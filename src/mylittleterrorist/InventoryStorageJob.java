@@ -7,11 +7,17 @@ public class InventoryStorageJob implements IWorkerJob {
     protected int x, y;
     protected Item item;
     protected boolean activated;
+    protected IWorkerJob after;
     
     public InventoryStorageJob(int x, int y, Item item) {
+        this(x, y, item, null);
+    }
+    
+    public InventoryStorageJob(int x, int y, Item item, IWorkerJob after) {
         this.x = x;
         this.y = y;
         this.item = item;
+        this.after = after;
     }
 
     public Point equipmentPosition() {
@@ -37,11 +43,14 @@ public class InventoryStorageJob implements IWorkerJob {
         if (slot.item == item) {
             worker.setHolding(null);
             slot.increase();
+            worker.setJob(after);
         } else if (slot.item == null) {
             worker.setHolding(null);
             slot.set(item, 1);
+            worker.setJob(after);
+        } else {
+            worker.setJob(null);
         }
-        worker.setJob(null);
     }
 
     public String getDescription() {

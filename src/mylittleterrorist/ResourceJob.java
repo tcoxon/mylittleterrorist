@@ -16,6 +16,10 @@ public class ResourceJob implements IWorkerJob {
     protected int progress;
     protected boolean activated;
     
+    public ResourceJob(ResourceJob other) {
+        this(other.x, other.y, other.kinds);
+    }
+    
     public ResourceJob(int x, int y) {
         this(x, y, EnumSet.noneOf(Resource.class));
     }
@@ -56,7 +60,8 @@ public class ResourceJob implements IWorkerJob {
             int slotIdx = game.getMatchingInventorySlotIndex(worker.getHolding());
             if (slotIdx != -1) {
                 worker.setJob(new InventoryStorageJob(
-                        slotIdx+1, 0, worker.getHolding()));
+                        slotIdx+1, 0, worker.getHolding(),
+                        new ResourceJob(this)));
             } else {
                 worker.setJob(null);
             }

@@ -71,18 +71,20 @@ public class Worker {
                 moveTo(map, entrance.x, entrance.y-1);
             }
             
-            // TODO: send worker to inventory if carrying something
-            // ATM just sends worker to a random tile
-            List<Point> floorTiles = new ArrayList<Point>(
-                    map.getWidth()*map.getHeight());
-            for (int x = 0; x < map.getWidth(); ++x)
-            for (int y = 0; y < map.getHeight(); ++y) {
-                if (map.get(x,y).isWalkable())
-                    floorTiles.add(new Point(x,y));
-            }
-            if (floorTiles.size() != 0) {
-                targetPos = floorTiles.get(
-                        new Random().nextInt(floorTiles.size()));
+            if (getJob() != null) {
+                targetPos = getJob().requiredPosition();
+            } else {
+                List<Point> floorTiles = new ArrayList<Point>(
+                        map.getWidth()*map.getHeight());
+                for (int x = 0; x < map.getWidth(); ++x)
+                for (int y = 0; y < map.getHeight(); ++y) {
+                    if (map.get(x,y).isWalkable())
+                        floorTiles.add(new Point(x,y));
+                }
+                if (floorTiles.size() != 0) {
+                    targetPos = floorTiles.get(
+                            new Random().nextInt(floorTiles.size()));
+                }
             }
         }
     }
