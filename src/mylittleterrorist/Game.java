@@ -351,14 +351,14 @@ public class Game {
         return inventory;
     }
 
-    public boolean buy(Item item) {
+    public String buy(Item item) {
         if (money >= item.cost) {
             // First try to put it into a slot with the same kind of item
             for (InventorySlot slot: inventory) {
                 if (slot.getItem() == item) {
                     slot.increase();
                     money -= item.cost;
-                    return true;
+                    return null;
                 }
             }
             
@@ -367,11 +367,13 @@ public class Game {
                 if (slot.getItem() == null) {
                     slot.set(item, 1);
                     money -= item.cost;
-                    return true;
+                    return null;
                 }
             }
+            
+            return "Not enough free shelf space";
         }
-        return false;
+        return "Not enough money";
     }
     
 }

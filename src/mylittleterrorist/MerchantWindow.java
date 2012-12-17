@@ -56,6 +56,11 @@ public class MerchantWindow implements IGameWindow {
         JScrollPane jtableScroll = new JScrollPane(jtable);
         mainPanel.add(jtableScroll, BorderLayout.CENTER);
         
+        final JLabel errorLabel = new JLabel("");
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setHorizontalTextPosition(JLabel.CENTER);
+        mainPanel.add(errorLabel, BorderLayout.SOUTH);
+        
         // Disable editing of the table contents:
         jtable.setModel(new AbstractTableModel() {
             private static final long serialVersionUID = 1L;
@@ -86,10 +91,14 @@ public class MerchantWindow implements IGameWindow {
                 if (e.getButton() == 1 && e.getClickCount() == 2) {
                     int row = jtable.getSelectedRow();
                     Item item = Item.values()[row];
-                    if (game.buy(item)) {
+                    String error = game.buy(item);
+                    if (error == null) {
                         ownedCount.put(item, ownedCount.get(item)+1);
                         table[row][2] = Integer.toString(ownedCount.get(item));
                         jtable.repaint();
+                        errorLabel.setText("");
+                    } else {
+                        errorLabel.setText(error);
                     }
                 }
             }
