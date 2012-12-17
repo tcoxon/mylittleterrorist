@@ -1,5 +1,6 @@
 package mylittleterrorist;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -158,6 +159,7 @@ public class Worker {
 
     public void render(Graphics2D g, Spritesheet spritesheet) {
         int row, col;
+        // select a sprite for the worker's style
         switch (style) {
         case MALE:
             row = 1;
@@ -170,14 +172,28 @@ public class Worker {
         default:
             throw new RuntimeException("Unknown worker style");
         }
+        
         // Animate movement:
         if (tweenFrames >= MAX_TWEEN_FRAMES/2)
             ++col;
+        
+        // draw main sprite
         g.drawImage(spritesheet.get(col, row), null, 0, 0);
         
+        // Draw items being held
         if (holding != null) {
             holding.render(g);
         }
+        
+        // draw job progress bar
+        double progress = 0.0;
+        if (getJob() != null) progress = getJob().getProgress();
+        g.setColor(Color.GREEN);
+        g.fillRect(
+                (int)(0.2 * Game.TILE_WIDTH),
+                (int)(0.6 * Game.TILE_HEIGHT),
+                (int)(0.6 * Game.TILE_WIDTH * progress),
+                (int)(0.2 * Game.TILE_HEIGHT));
     }
 
     public String toString() {
