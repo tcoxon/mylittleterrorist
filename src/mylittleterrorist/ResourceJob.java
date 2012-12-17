@@ -75,9 +75,13 @@ public class ResourceJob implements IWorkerJob {
             Resource kind = kindList.get(r.nextInt(kinds.size()));
             if (r.nextDouble() <= kind.successProbability(game)) {
                 if (kind == Resource.RECRUIT) {
-                    // TODO different styles of recruits
-                    game.addWorker(Worker.Style.MALE);
-                    progress = 0;
+                    if (game.getWorkerCount() <= game.getMaxWorkers()) {
+                        // TODO different styles of recruits
+                        game.addWorker(Worker.Style.MALE);
+                        progress = 0;
+                    } else {
+                        worker.setJob(null);
+                    }
                 } else {
                     worker.setHolding(kind.item);
                 }

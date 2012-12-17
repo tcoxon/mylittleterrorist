@@ -57,7 +57,7 @@ public class Game {
         frame = 0;
         
         money = 4000;
-        renown = 10;
+        renown = 1000;
     }
     
     protected void setupInventory() {
@@ -402,6 +402,14 @@ public class Game {
             return "Not enough free shelf space";
         }
         return "Not enough money";
+    }
+
+    public int getWorkerCount() {
+        return workerData.size();
+    }
+    
+    public int getMaxWorkers() {
+        return 3 + renown/50;
     }
     
 }

@@ -1,6 +1,7 @@
 package mylittleterrorist;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -40,6 +42,10 @@ public class ResourceSelectWindow implements IGameWindow {
         
         panel.add(boxes, BorderLayout.CENTER);
         
+        final JLabel errorLabel = new JLabel("");
+        errorLabel.setForeground(Color.RED);
+        panel.add(errorLabel, BorderLayout.NORTH);
+
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton okBtn = new JButton("OK");
         JButton cancelBtn = new JButton("Cancel");
@@ -52,16 +58,21 @@ public class ResourceSelectWindow implements IGameWindow {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                Set<Resource> kinds = job.getKinds();
-                if (coalBox.isSelected())
-                    kinds.add(Resource.COAL);
-                if (sulphurBox.isSelected())
-                    kinds.add(Resource.SULPHUR);
-                if (fertilizerBox.isSelected())
-                    kinds.add(Resource.FERTILIZER);
-                if (recruitBox.isSelected())
-                    kinds.add(Resource.RECRUIT);
-                game.closeWindow();
+                if (recruitBox.isSelected() &&
+                        game.getWorkerCount() >= game.getMaxWorkers()) {
+                    errorLabel.setText("Cannot recruit any more terrorists at this level of notoriety");
+                } else {
+                    Set<Resource> kinds = job.getKinds();
+                    if (coalBox.isSelected())
+                        kinds.add(Resource.COAL);
+                    if (sulphurBox.isSelected())
+                        kinds.add(Resource.SULPHUR);
+                    if (fertilizerBox.isSelected())
+                        kinds.add(Resource.FERTILIZER);
+                    if (recruitBox.isSelected())
+                        kinds.add(Resource.RECRUIT);
+                    game.closeWindow();
+                }
             }
             
         });

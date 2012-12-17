@@ -10,8 +10,7 @@ public enum Resource {
 
         @Override
         public double successProbability(Game game) {
-            // The ease of finding recruits depends on your renown
-            return Math.log(game.getRenown()) * 0.05;
+            return 0.04;
         }
         
     }
