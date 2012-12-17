@@ -534,6 +534,7 @@ public class Game {
                 if (slot.getItem() == req.getItem()) {
                     if (slot.getCount() > count) {
                         slot.setCount(slot.getCount() - count);
+                        count = 0;
                         break;
                     } else {
                         count -= slot.getCount();
