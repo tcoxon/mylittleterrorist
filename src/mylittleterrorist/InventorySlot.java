@@ -7,6 +7,16 @@ public class InventorySlot {
     protected Item item;
     protected int count;
     
+    public InventorySlot() {
+        item = null;
+        count = 0;
+    }
+    
+    public InventorySlot(Item item, int count) {
+        this.item = item;
+        this.count = count;
+    }
+    
     public Item getItem() {
         return item;
     }
@@ -48,6 +58,11 @@ public class InventorySlot {
                     4, Game.TILE_HEIGHT-4);
             g.setFont(origFont);
         }
+    }
+    
+    public String toString() {
+        if (item == null) return "<none>";
+        return count + "x " + item.name;
     }
     
 }

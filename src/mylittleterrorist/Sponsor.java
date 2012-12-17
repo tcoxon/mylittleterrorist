@@ -5,14 +5,22 @@ import java.util.Date;
 public class Sponsor {
 
     protected final String name, subject;
-    protected final int value;
+    protected final int value, renown;
     protected final long by;
+    protected InventorySlot[] required, rewards;
+    protected boolean suicide;
     
     // 'duration' is in seconds
-    public Sponsor(String name, String subject, int value, int duration) {
+    public Sponsor(String name, String subject,
+            InventorySlot[] required, InventorySlot[] rewards, boolean suicide,
+            int value, int renown, int duration) {
         this.name = name;
         this.subject = subject;
+        this.required = required;
+        this.rewards = rewards;
+        this.suicide = suicide;
         this.value = value;
+        this.renown = renown;
         this.by = new Date().getTime() + duration*1000;
     }
     
@@ -26,6 +34,10 @@ public class Sponsor {
 
     public int getValue() {
         return value;
+    }
+    
+    public int getRenown() {
+        return renown;
     }
     
     public long getMSLeft() {
@@ -45,7 +57,22 @@ public class Sponsor {
     }
     
     public String getHTMLBody() {
-        return "<html>$" + value + " - TODO</html>";
+        String html = "<html>" +
+                "<br/>";
+        if (required.length > 0) {
+            html += "<b>Requires:</b><ul>";
+            for (InventorySlot s: required) {
+                html += "<li>"+s+"</li>";
+            }
+            html += "</ul>";
+        }
+        html += "<b>Rewards:</b><ul>";
+        for (InventorySlot s: rewards) {
+            html += "<li>"+s+"</li>";
+        }
+        html += "<li>$"+value+"</li>";
+        html += "</ul>";
+        return html;
     }
 
 }

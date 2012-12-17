@@ -62,7 +62,7 @@ public class SponsorInboxWindow implements IGameWindow {
         
         header.add(headers, BorderLayout.CENTER);
 
-        JLabel subject = new JLabel("<html><b>Subject:</b> "+
+        JLabel subject = new JLabel("<html>"+
                 sponsor.getSubject() + "<br/></html>");
         header.add(subject, BorderLayout.SOUTH);
         msgPanel.add(header, BorderLayout.NORTH);
@@ -127,8 +127,8 @@ public class SponsorInboxWindow implements IGameWindow {
         final JPanel msgPanel = new JPanel();
         msgPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         msgPanel.setBackground(Color.WHITE);
-        JScrollPane msgScroll = new JScrollPane(msgPanel);
-        panel.add(msgScroll, BorderLayout.CENTER);
+        //JScrollPane msgScroll = new JScrollPane(msgPanel);
+        panel.add(msgPanel, BorderLayout.CENTER);
         
         inbox.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {

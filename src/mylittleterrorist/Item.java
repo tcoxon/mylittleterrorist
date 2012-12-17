@@ -9,7 +9,9 @@ public enum Item {
     SULPHUR("Sulphur", 5, 0),
     FERTILIZER("Fertilizer", 5, 2),
     BOMB("Bomb", 20, 3),
-    AK47("AK-47", 50, 4);
+    AK47("AK-47", 50, 4),
+    PILOTS_LICENSE("Pilot's License", 500, 5),
+    ;
     
     public final String name;
     public final int cost, col;

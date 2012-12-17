@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -13,6 +14,8 @@ import javax.swing.border.*;
 import mylittleterrorist.Worker.Style;
 
 public class Game {
+    
+    public static final int MAX_SPONSORS = 30;
 
     public static final int TILE_WIDTH = 52, TILE_HEIGHT = 52;
 
@@ -48,20 +51,26 @@ public class Game {
         
         bufferedEvents = new ArrayList<InputEvent>(200);
         
+        frame = 0;
+        
+        money = 1000;
+        renown = 1000;
+        
         workerData = new ArrayList<Worker>(20);
         addWorker(Worker.Style.MALE);
         addWorker(Worker.Style.MALE);
         addWorker(Worker.Style.FEMALE);
         
         sponsors = new ArrayList<Sponsor>();
-        sponsors.add(new Sponsor("Osama", "Destroy King's Cross", 25, 30));
+        addSponsor();
         
         setupInventory();
-        
-        frame = 0;
-        
-        money = 1000;
-        renown = 1000;
+    }
+    
+    protected void addSponsor() {
+        Sponsor sponsor = Plot.randomSponsor(renown);
+        if (sponsor != null)
+            sponsors.add(sponsor);
     }
     
     protected void setupInventory() {
@@ -250,6 +259,11 @@ public class Game {
         for (Sponsor sponsor: new ArrayList<Sponsor>(sponsors)) {
             if (sponsor.getMSLeft() <= 0)
                 sponsors.remove(sponsor);
+        }
+        
+        if (sponsors.size() < MAX_SPONSORS &&
+                new Random().nextInt((int)(1500/Math.log(renown))) == 0) {
+            addSponsor();
         }
     }
     
