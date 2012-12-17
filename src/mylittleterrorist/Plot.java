@@ -68,6 +68,22 @@ public enum Plot {
         rewards = new InventorySlot[]{};
     }},
     
+    DIRTY_BOMBING {{
+        senders = new String[]{ "Osama", "CIA Guy", "Somalian Pirate",
+                "Movie Pirate", "Time Traveller" };
+        subjects = new String[]{ "I want you to nuke %s.", "Nuke %s.",
+                "Make %s into a radioactive wasteland."};
+        locations = new String[]{ "King's Cross", "Russell Square",
+                "Eiffel Tower", "Parliament", "Santa's Grotto" };
+        requiredRenown = 100;
+        value = 300;
+        duration = 180;
+        gainedRenown = 100;
+        required = new InventorySlot[]{
+                new InventorySlot(Item.DIRTY_BOMB, 1)};
+        rewards = new InventorySlot[]{};
+    }},
+    
     SPACE_BOMBING {{
         senders = new String[]{ "Spaceman" };
         subjects = new String[]{ "%s is in the way of my mission to Mars.",
@@ -76,11 +92,11 @@ public enum Plot {
         locations = new String[]{ "The Moon" };
         value = 1000;
         duration = 300;
-        requiredRenown = 100;
+        requiredRenown = 200;
         gainedRenown = 1000;
         suicide = true;
         required = new InventorySlot[]{
-                new InventorySlot(Item.BOMB, 100),
+                new InventorySlot(Item.DIRTY_BOMB, 50),
                 new InventorySlot(Item.PILOTS_LICENSE, 1)};
         rewards = new InventorySlot[]{};
     }},

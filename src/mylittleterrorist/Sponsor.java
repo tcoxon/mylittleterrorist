@@ -59,19 +59,24 @@ public class Sponsor {
     public String getHTMLBody() {
         String html = "<html>" +
                 "<br/>";
-        if (required.length > 0) {
+        if (required.length > 0 || suicide) {
             html += "<b>Requires:</b><ul>";
             for (InventorySlot s: required) {
                 html += "<li>"+s+"</li>";
             }
+            if (suicide)
+                html += "<li>1x Suicide</li>";
             html += "</ul>";
         }
-        html += "<b>Rewards:</b><ul>";
-        for (InventorySlot s: rewards) {
-            html += "<li>"+s+"</li>";
+        if (rewards.length > 0 || value != 0) {
+            html += "<b>Rewards:</b><ul>";
+            for (InventorySlot s: rewards) {
+                html += "<li>"+s+"</li>";
+            }
+            if (value != 0)
+                html += "<li>$"+value+"</li>";
+            html += "</ul>";
         }
-        html += "<li>$"+value+"</li>";
-        html += "</ul>";
         return html;
     }
 

@@ -11,6 +11,8 @@ public enum Item {
     BOMB("Bomb", 20, 3),
     AK47("AK-47", 50, 4),
     PILOTS_LICENSE("Pilot's License", 500, 5),
+    PLUTONIUM("Plutonium", 200, 6),
+    DIRTY_BOMB("Dirty Bomb", 700, 7)
     ;
     
     public final String name;

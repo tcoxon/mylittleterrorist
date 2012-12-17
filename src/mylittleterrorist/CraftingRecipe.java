@@ -6,7 +6,8 @@ import java.util.Set;
 
 public enum CraftingRecipe {
 
-    BOMB(Item.BOMB, new Item[]{Item.COAL, Item.SULPHUR, Item.FERTILIZER})
+    BOMB(Item.BOMB, new Item[]{Item.COAL, Item.SULPHUR, Item.FERTILIZER}),
+    DIRTY_BOMB(Item.DIRTY_BOMB, new Item[]{Item.BOMB, Item.PLUTONIUM}),
     
     ;
     
