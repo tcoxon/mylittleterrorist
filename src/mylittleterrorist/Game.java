@@ -460,5 +460,12 @@ public class Game {
     public boolean hasSponsors() {
         return sponsors.size() > 0;
     }
+
+    public void executeOrder(Sponsor sponsor, Worker worker) {
+        if (sponsor.isSuicide()) {
+            Point entrance = map.getWorkerEntrance();
+            worker.setJob(new SuicideJob(entrance.x, entrance.y, sponsor));
+        }
+    }
     
 }

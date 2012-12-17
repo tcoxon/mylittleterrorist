@@ -24,6 +24,7 @@ public class Worker {
     protected int tweenFrames = 0;
     protected Style style;
     protected Item holding;
+    protected boolean dead;
     
     public Worker(int id, Style style) {
         this.id = id;
@@ -32,8 +33,16 @@ public class Worker {
         else name = "Terry";
     }
     
+    public boolean isDead() {
+        return dead;
+    }
+    
+    public void kill() {
+        dead = true;
+    }
+    
     public String getName() {
-        return name + " #" + Integer.toString(id);
+        return name + (dead ? " - dead" : "");
     }
 
     public void setName(String name) {
@@ -58,7 +67,7 @@ public class Worker {
     }
 
     public boolean isOnScreen() {
-        return pos != null;
+        return pos != null && !dead;
     }
 
     protected void updateOffScreen(Game game) {
@@ -139,6 +148,8 @@ public class Worker {
     }
     
     public void update(Game game) {
+        if (dead) return;
+        
         if (isOnScreen())
             updateOnScreen(game);
         else
@@ -159,6 +170,8 @@ public class Worker {
     }
 
     public void render(Graphics2D g, Spritesheet spritesheet) {
+        if (dead) return;
+        
         int row, col;
         // select a sprite for the worker's style
         switch (style) {
@@ -205,6 +218,7 @@ public class Worker {
     }
     
     public String getJobDescription() {
+        if (dead) return "Dead";
         if (job != null) {
             return job.getDescription();
         } else {

@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -27,11 +26,20 @@ import javax.swing.event.ListSelectionListener;
 
 public class SponsorInboxWindow implements IGameWindow {
 
+    protected Worker worker;
+    
+    public SponsorInboxWindow(Worker worker) {
+        this.worker = worker;
+    }
+    
     public String getTitle() {
         return "Inbox";
     }
     
-    public void setMsgPanel(final Game game, JList inbox, JPanel msgPanel) {
+    public void setMsgPanel(final Game game, final JLabel errorLabel,
+            JList inbox, JPanel msgPanel) {
+        
+        errorLabel.setText("");
         
         for (Component c: msgPanel.getComponents()) {
             msgPanel.remove(c);
@@ -78,7 +86,10 @@ public class SponsorInboxWindow implements IGameWindow {
             public void mouseClicked(MouseEvent e) {
                 if (fillBtn.isEnabled()) {
                     // TODO execute order
+                    game.executeOrder(sponsor, worker);
                     game.closeWindow();
+                } else {
+                    errorLabel.setText("This order has expired.");
                 }
             }
             
@@ -132,7 +143,7 @@ public class SponsorInboxWindow implements IGameWindow {
         
         inbox.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent arg0) {
-                setMsgPanel(game, inbox, msgPanel);
+                setMsgPanel(game, errorLabel, inbox, msgPanel);
             }
         });
         

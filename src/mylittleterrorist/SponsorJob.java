@@ -18,7 +18,7 @@ public class SponsorJob implements IWorkerJob {
 
     public void activate(Game game, Worker worker) {
         if (game.hasSponsors())
-            game.showWindow(worker, new SponsorInboxWindow());
+            game.showWindow(worker, new SponsorInboxWindow(worker));
         activated = true;
     }
     

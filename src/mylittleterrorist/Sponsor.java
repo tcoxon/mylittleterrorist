@@ -80,4 +80,16 @@ public class Sponsor {
         return html;
     }
 
+    public InventorySlot[] getRequired() {
+        return required;
+    }
+
+    public InventorySlot[] getRewards() {
+        return rewards;
+    }
+
+    public boolean isSuicide() {
+        return suicide;
+    }
+
 }
