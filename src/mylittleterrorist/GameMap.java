@@ -23,7 +23,7 @@ public class GameMap implements AStar.IMap {
         mapData[workerEntrance.x][workerEntrance.y] = new Tile(Tile.Kind.DOOR, 0);
         
         for (int x = 4; x < getWidth()-4; ++x) {
-            mapData[x][2] = new Tile(Tile.Kind.CRAFTING_BENCH, 0);
+            mapData[x][3] = new Tile(Tile.Kind.CRAFTING_BENCH, 0);
         }
         
         for (int x = 1; x < getWidth()-1; ++x) {

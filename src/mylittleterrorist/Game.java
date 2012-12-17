@@ -22,7 +22,7 @@ public class Game {
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
     protected int money, renown;
-    protected InventorySlot[] inventory;
+    protected InventorySlot[] inventory, crafting;
     
     protected Spritesheet spritesheet;
     
@@ -61,18 +61,25 @@ public class Game {
     }
     
     protected void setupInventory() {
-        int count = 0;
+        int invCount = 0, craftCount = 0;
         for (int x = 0; x < map.getWidth(); ++x)
         for (int y = 0; y < map.getHeight(); ++y) {
             Tile t = map.get(x,y);
             if (t.getKind() == Tile.Kind.INVENTORY) {
-                t.setExtraData(count++);
+                t.setExtraData(invCount++);
+            } else if (t.getKind() == Tile.Kind.CRAFTING_BENCH) {
+                t.setExtraData(craftCount++);
             }
         }
         
-        inventory = new InventorySlot[count];
-        for (int i = 0; i < count; ++i) {
+        inventory = new InventorySlot[invCount];
+        for (int i = 0; i < invCount; ++i) {
             inventory[i] = new InventorySlot();
+        }
+        
+        crafting = new InventorySlot[craftCount];
+        for (int i = 0; i < craftCount; ++i) {
+            crafting[i] = new InventorySlot();
         }
         
         inventory[0].set(Item.COAL, 2);
@@ -203,10 +210,10 @@ public class Game {
             switch (t.getKind()) {
             // TODO if the target tile contains a usable block, make worker use
             // it
-            case CRAFTING_BENCH:
             case SPONSOR:
                 y += 1;
                 break;
+            case CRAFTING_BENCH:
             case DOOR:
                 y -= 1;
                 break;
