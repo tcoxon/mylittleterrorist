@@ -61,7 +61,7 @@ public class Worker {
     protected void updateOffScreen(Game game) {
         GameMap map = game.getMap();
         
-        if (getJob() == null && !isOnScreen()) {
+        if ((getJob() == null || !getJob().isActivated()) && !isOnScreen()) {
             
             Point entrance = map.getWorkerEntrance();
             if (map.get(entrance.x, entrance.y-1).getKind() ==
@@ -117,17 +117,6 @@ public class Worker {
         // positions
         if (tweenFrames != 0) return;
         
-        if (job != null) {
-            if (!job.requiredPosition().equals(pos)) {
-                targetPos = job.requiredPosition();
-            } else {
-                if (!job.isActivated())
-                    job.activate(game, this);
-                else
-                    job.tick(game, this);
-            }
-        }
-        
         if (targetPos != null) {
             Point next = AStar.nextStep(map, pos, targetPos);
             if (next != null) {
@@ -143,6 +132,19 @@ public class Worker {
             updateOnScreen(game);
         else
             updateOffScreen(game);
+
+        if (job != null) {
+            if (!job.isActivated()) {
+                if (!job.requiredPosition().equals(pos)) {
+                    targetPos = job.requiredPosition();
+                } else {
+                    job.activate(game, this);
+                }
+            } else {
+                job.tick(game, this);
+            }
+        }
+        
     }
 
     public void render(Graphics2D g, Spritesheet spritesheet) {
@@ -187,5 +189,9 @@ public class Worker {
 
     public void setHolding(Item holding) {
         this.holding = holding;
+    }
+
+    public void setPos(Point p) {
+        this.pos = p;
     }
 }

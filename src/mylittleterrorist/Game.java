@@ -165,7 +165,8 @@ public class Game {
             // (Un)select workers to command
             boolean clickedOne = false;
             for (Worker worker: workerData) {
-                if (worker.getPos().x != e.x || worker.getPos().y != e.y)
+                if (!worker.isOnScreen() || worker.getPos().x != e.x ||
+                        worker.getPos().y != e.y)
                     continue;
                 if (selectedWorker != worker.id) {
                     selectedWorker = worker.id;
@@ -187,6 +188,9 @@ public class Game {
                 return;
             case INVENTORY:
                 setWorkerJobInventory(worker, e.x, e.y);
+                return;
+            case DOOR:
+                worker.setJob(new ResourceJob(e.x, e.y));
                 return;
             }
             
@@ -349,6 +353,26 @@ public class Game {
 
     public InventorySlot[] getInventory() {
         return inventory;
+    }
+    
+    public int getMatchingInventorySlotIndex(Item item) {
+        // First try to put it into a slot with the same kind of item
+        for (int i = 0; i < inventory.length; ++i) {
+            InventorySlot slot = inventory[i];
+            if (slot.getItem() == item) {
+                return i;
+            }
+        }
+        
+        // Otherwise, try to put it into an empty slot
+        for (int i = 0; i < inventory.length; ++i) {
+            InventorySlot slot = inventory[i];
+            if (slot.getItem() == null) {
+                return i;
+            }
+        }
+        
+        return -1;
     }
 
     public String buy(Item item) {
