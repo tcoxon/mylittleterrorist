@@ -35,7 +35,7 @@ public enum Plot {
         requiredRenown = 1;
         value = 100;
         duration = 120;
-        gainedRenown = 100;
+        gainedRenown = 20;
         required = new InventorySlot[]{
                 new InventorySlot(Item.BOMB, 1)};
         rewards = new InventorySlot[]{};
@@ -96,7 +96,7 @@ public enum Plot {
         gainedRenown = 1000;
         suicide = true;
         required = new InventorySlot[]{
-                new InventorySlot(Item.DIRTY_BOMB, 50),
+                new InventorySlot(Item.DIRTY_BOMB, 5),
                 new InventorySlot(Item.PILOTS_LICENSE, 1)};
         rewards = new InventorySlot[]{};
     }},
@@ -105,12 +105,25 @@ public enum Plot {
         senders = new String[]{ "CIA Guy" };
         subjects = new String[]{ "Need anything? Flying lessons on the cheap here." };
         locations = new String[]{ "JFK Airport" };
-        value = 0;
+        value = -20;
         duration = 60;
         requiredRenown = 50;
         gainedRenown = 0;
         required = new InventorySlot[]{};
         rewards = new InventorySlot[]{new InventorySlot(Item.PILOTS_LICENSE, 1)};
+    }},
+    
+    PLANE_HIJACK {{
+        senders = new String[]{ "CIA Guy" };
+        subjects = new String[]{ "It's a nice time for a flight through %s." };
+        locations = new String[]{ "New York", "London", "Dubai" };
+        value = 300;
+        duration = 120;
+        requiredRenown = 50;
+        gainedRenown = 60;
+        suicide = true;
+        required = new InventorySlot[]{new InventorySlot(Item.PILOTS_LICENSE, 1)};
+        rewards = new InventorySlot[]{};
     }},
     
     ;

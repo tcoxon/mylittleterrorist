@@ -28,7 +28,10 @@ public class SuicideJob implements IWorkerJob {
     public void activate(Game game, Worker worker) {
         worker.moveOffScreen(game.getMap());
         activated = true;
-        worker.kill();
+        if (game.executeOrder(sponsor)) {
+            worker.kill();
+        }
+        worker.setJob(null);
     }
 
     public double getProgress() {

@@ -86,8 +86,11 @@ public class SponsorInboxWindow implements IGameWindow {
             public void mouseClicked(MouseEvent e) {
                 if (fillBtn.isEnabled()) {
                     // TODO execute order
-                    game.executeOrder(sponsor, worker);
-                    game.closeWindow();
+                    if (game.startOrder(sponsor, worker)) {
+                        game.closeWindow();
+                    } else {
+                        errorLabel.setText("You do not have the resources required to execute this order");
+                    }
                 } else {
                     errorLabel.setText("This order has expired.");
                 }

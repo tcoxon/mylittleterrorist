@@ -4,9 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -461,11 +460,70 @@ public class Game {
         return sponsors.size() > 0;
     }
 
-    public void executeOrder(Sponsor sponsor, Worker worker) {
+    public boolean canExecuteOrder(Sponsor sponsor) {
+        if (sponsor.value + money < 0) return false;
+        Map<Item,Integer> itemCounts = new EnumMap<Item,Integer>(Item.class);
+        for (Item item: Item.values())
+            itemCounts.put(item, 0);
+        for (InventorySlot slot: inventory) {
+            if (slot.getItem() == null) continue;
+            itemCounts.put(slot.getItem(), itemCounts.get(slot.getItem()) +
+                    slot.getCount());
+        }
+        
+        for (InventorySlot slot: sponsor.getRequired()) {
+            if (itemCounts.get(slot.getItem()) < slot.getCount())
+                return false;
+        }
+        
+        for (InventorySlot reward: sponsor.getRewards()) {
+            if (getMatchingInventorySlotIndex(reward.getItem()) == -1)
+                return false;
+        }
+        
+        return true;
+    }
+    
+    public boolean startOrder(Sponsor sponsor, Worker worker) {
+        if (!canExecuteOrder(sponsor)) return false;
         if (sponsor.isSuicide()) {
             Point entrance = map.getWorkerEntrance();
             worker.setJob(new SuicideJob(entrance.x, entrance.y, sponsor));
+        } else {
+            executeOrder(sponsor);
         }
+        return true;
+    }
+    
+    public boolean executeOrder(Sponsor sponsor) {
+        if (!canExecuteOrder(sponsor)) return false;
+        
+        money += sponsor.getValue();
+        renown += sponsor.getRenown();
+        for (InventorySlot req: sponsor.getRequired()) {
+            int count = req.getCount();
+            for (InventorySlot slot: inventory) {
+                if (slot.getItem() == req.getItem()) {
+                    if (slot.getCount() > count) {
+                        slot.setCount(slot.getCount() - count);
+                        break;
+                    } else {
+                        count -= slot.getCount();
+                        slot.setCount(0);
+                    }
+                }
+            }
+            if (count != 0) return false;
+        }
+        
+        for (InventorySlot reward: sponsor.getRewards()) {
+            int i = getMatchingInventorySlotIndex(reward.getItem());
+            if (i == -1) return false;
+            inventory[i].set(reward.getItem(), inventory[i].getCount()
+                    + reward.getCount());
+        }
+        
+        return true;
     }
     
 }
