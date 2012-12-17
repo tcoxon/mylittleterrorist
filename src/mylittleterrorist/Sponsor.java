@@ -4,15 +4,20 @@ import java.util.Date;
 
 public class Sponsor {
 
-    protected final String name;
+    protected final String name, subject;
     protected final int value;
     protected final long by;
     
     // 'duration' is in seconds
-    public Sponsor(String name, int value, int duration) {
+    public Sponsor(String name, String subject, int value, int duration) {
         this.name = name;
+        this.subject = subject;
         this.value = value;
         this.by = new Date().getTime() + duration*1000;
+    }
+    
+    public String getSubject() {
+        return subject;
     }
 
     public String getName() {
@@ -36,7 +41,11 @@ public class Sponsor {
     }
     
     public String toString() {
-        return name;
+        return name + " - $" + value + " - " + subject;
+    }
+    
+    public String getHTMLBody() {
+        return "<html>$" + value + " - TODO</html>";
     }
 
 }

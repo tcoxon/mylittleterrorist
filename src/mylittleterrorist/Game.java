@@ -54,7 +54,7 @@ public class Game {
         addWorker(Worker.Style.FEMALE);
         
         sponsors = new ArrayList<Sponsor>();
-        sponsors.add(new Sponsor("Osama", 25, 30));
+        sponsors.add(new Sponsor("Osama", "Destroy King's Cross", 25, 30));
         
         setupInventory();
         
