@@ -13,6 +13,9 @@ import javax.swing.border.*;
 import mylittleterrorist.Worker.Style;
 
 public class Game {
+
+    // Lower is more difficult:
+    public static final int DIFFICULTY = 300;
     
     public static final int MAX_SPONSORS = 30;
 
@@ -52,8 +55,8 @@ public class Game {
         
         frame = 0;
         
-        money = 1000;
-        renown = 1000;
+        money = 20;
+        renown = 10;
         
         workerData = new ArrayList<Worker>(20);
         addWorker(Worker.Style.MALE);
@@ -260,9 +263,14 @@ public class Game {
                 sponsors.remove(sponsor);
         }
         
+        Random r = new Random();
         if (sponsors.size() < MAX_SPONSORS &&
-                new Random().nextInt((int)(1500/Math.log(renown))) == 0) {
+                r.nextInt((int)(1500/Math.log(renown))) == 0) {
             addSponsor();
+        }
+        
+        if (r.nextInt(DIFFICULTY) == 0) {
+            --renown;
         }
     }
     
@@ -441,11 +449,15 @@ public class Game {
     }
 
     public int getWorkerCount() {
-        return workerData.size();
+        int count = 0;
+        for (Worker worker: workerData) {
+            if (!worker.isDead()) ++count;
+        }
+        return count;
     }
     
     public int getMaxWorkers() {
-        return 3 + renown/50;
+        return 5 + renown/50;
     }
 
     public InventorySlot[] getCrafting() {

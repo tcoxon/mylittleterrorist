@@ -10,7 +10,7 @@ public enum Resource {
 
         @Override
         public double successProbability(Game game) {
-            return 0.04;
+            return 0.1;
         }
         
     }

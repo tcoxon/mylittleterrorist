@@ -97,6 +97,13 @@ public class StatusPanel extends JPanel {
         
         moneyLabel.setText("Money: $" + Integer.toString(game.getMoney()));
         renownLabel.setText("Notoriety: " + Integer.toString(game.getRenown()));
+        if (game.getRenown() < 10) {
+            renownLabel.setForeground(Color.RED);
+        } else if (game.getRenown() > 900) {
+            renownLabel.setForeground(Color.GREEN);
+        } else {
+            renownLabel.setForeground(Color.BLACK);
+        }
         
         Worker sel = game.getSelectedWorker();
         if (sel != null) {
