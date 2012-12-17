@@ -234,4 +234,8 @@ public class Worker {
         this.holding = holding;
     }
 
+    public Style getStyle() {
+        return style;
+    }
+
 }

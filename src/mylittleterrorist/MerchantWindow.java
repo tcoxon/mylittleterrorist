@@ -11,6 +11,8 @@ import javax.swing.table.*;
 
 public class MerchantWindow implements IGameWindow {
 
+    public static final int SEX_SLAVE_COST = 200;
+    
     public String getTitle() {
         return "Arms Dealer";
     }
@@ -44,13 +46,16 @@ public class MerchantWindow implements IGameWindow {
         }
         
         final String[] columns = new String[]{"Item", "Cost", "Owned"};
-        final Object[][] table = new Object[Item.values().length][3];
-        for (int i = 0; i < table.length; ++i) {
+        final Object[][] table = new Object[Item.values().length+1][3];
+        for (int i = 0; i < Item.values().length; ++i) {
             Item item = Item.values()[i];
             table[i][0] = item.name;
             table[i][1] = "$" + Integer.toString(item.cost);
             table[i][2] = ownedCount.get(item);
         }
+        table[Item.values().length] = new Object[]{
+                "Sex Slave", "$"+SEX_SLAVE_COST, game.getSexSlaveCount()
+        };
         
         final JTable jtable = new JTable(table, columns);
         JScrollPane jtableScroll = new JScrollPane(jtable);
@@ -70,7 +75,7 @@ public class MerchantWindow implements IGameWindow {
             }
 
             public int getRowCount() {
-                return Item.values().length;
+                return Item.values().length+1;
             }
 
             public Object getValueAt(int row, int col) {
@@ -90,15 +95,26 @@ public class MerchantWindow implements IGameWindow {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == 1 && e.getClickCount() == 2) {
                     int row = jtable.getSelectedRow();
-                    Item item = Item.values()[row];
-                    String error = game.buy(item);
-                    if (error == null) {
-                        ownedCount.put(item, ownedCount.get(item)+1);
-                        table[row][2] = Integer.toString(ownedCount.get(item));
-                        jtable.repaint();
-                        errorLabel.setText("");
+                    if (row < Item.values().length) {
+                        Item item = Item.values()[row];
+                        String error = game.buy(item);
+                        if (error == null) {
+                            ownedCount.put(item, ownedCount.get(item)+1);
+                            table[row][2] = Integer.toString(ownedCount.get(item));
+                            jtable.repaint();
+                            errorLabel.setText("");
+                        } else {
+                            errorLabel.setText(error);
+                        }
                     } else {
-                        errorLabel.setText(error);
+                        String error = game.buySexSlave(SEX_SLAVE_COST);
+                        if (error == null) {
+                            errorLabel.setText("");
+                            table[row][2] = game.getSexSlaveCount();
+                            jtable.repaint();
+                        } else {
+                            errorLabel.setText(error);
+                        }
                     }
                 }
             }

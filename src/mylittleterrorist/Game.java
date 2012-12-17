@@ -566,5 +566,23 @@ public class Game {
             
         this.renown = renown;
     }
+
+    public int getSexSlaveCount() {
+        int count = 0;
+        for (Worker worker: workerData) {
+            if (!worker.isDead() && worker.getStyle() == Worker.Style.FEMALE)
+                ++count;
+        }
+        return count;
+    }
+
+    public String buySexSlave(int cost) {
+        if (cost > money) return "Not enough money";
+        if (getWorkerCount() >= getMaxWorkers())
+            return "You already have enough workers for your current notoriety level";
+        money -= cost;
+        addWorker(Worker.Style.FEMALE);
+        return null;
+    }
     
 }

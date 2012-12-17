@@ -8,7 +8,7 @@ public enum Item {
     COAL("Coal", 5, 1),
     SULPHUR("Sulphur", 5, 0),
     FERTILIZER("Fertilizer", 5, 2),
-    BOMB("Bomb", 20, 3),
+    BOMB("Bomb", 50, 3),
     AK47("AK-47", 50, 4),
     PILOTS_LICENSE("Pilot's License", 500, 5),
     PLUTONIUM("Plutonium", 200, 6),
