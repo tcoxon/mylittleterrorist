@@ -21,7 +21,7 @@ public class MerchantWindow implements IGameWindow {
         
         try {
             ImagePanel face = new ImagePanel(
-                    Spritesheet.get("/sprites/faces.png", 128, 128).get(0,0));
+                    Spritesheet.get("/sprites/faces.png", 128, 128).get(1,0));
             panel.add(face, BorderLayout.WEST);
         } catch (IOException e) {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package mylittleterrorist;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -182,7 +183,10 @@ public class Worker {
         
         // Draw items being held
         if (holding != null) {
+            AffineTransform xfm2 = g.getTransform();
+            g.translate(0, 10);
             holding.render(g);
+            g.setTransform(xfm2);
         }
         
         // draw job progress bar

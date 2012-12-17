@@ -64,10 +64,10 @@ public class Tile implements AStar.ITile {
             g.drawImage(spritesheet.get(0, 4), null, 0, 0);
             break;
         case CRAFTING_BENCH:
-            g.drawImage(spritesheet.get(3, 4), null, 0, 0);
+            g.drawImage(spritesheet.get(2, 4), null, 0, 0);
             break;
         case INVENTORY:
-            g.drawImage(spritesheet.get(2, 4), null, 0, 0);
+            g.drawImage(spritesheet.get(1, 4), null, 0, 0);
             break;
         case SPONSOR:
             g.drawImage(spritesheet.get(0, 3), null, 0, 0); // FLOOR

@@ -60,8 +60,8 @@ public class Game {
         
         frame = 0;
         
-        money = 10;
-        renown = 10;
+        money = 1000;
+        renown = 1000;
     }
     
     protected void setupInventory() {
