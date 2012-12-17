@@ -15,7 +15,8 @@ import mylittleterrorist.Worker.Style;
 public class Game {
 
     // Lower is more difficult:
-    public static final int DIFFICULTY = 300;
+    public static final int DIFFICULTY = 300,
+            MAX_RENOWN = 1000;
     
     public static final int MAX_SPONSORS = 30;
 
@@ -26,7 +27,9 @@ public class Game {
     protected GameMap map;
     protected List<Worker> workerData;
     protected int selectedWorker = 0;
-    protected int money, renown;
+    protected int money;
+
+    private int renown;
     protected InventorySlot[] inventory, crafting;
     protected List<Sponsor> sponsors;
     
@@ -56,7 +59,7 @@ public class Game {
         frame = 0;
         
         money = 20;
-        renown = 10;
+        renown = 1;
         
         workerData = new ArrayList<Worker>(20);
         addWorker(Worker.Style.MALE);
@@ -70,7 +73,7 @@ public class Game {
     }
     
     protected void addSponsor() {
-        Sponsor sponsor = Plot.randomSponsor(renown);
+        Sponsor sponsor = Plot.randomSponsor(getRenown());
         if (sponsor != null)
             sponsors.add(sponsor);
     }
@@ -265,16 +268,23 @@ public class Game {
         
         Random r = new Random();
         if (sponsors.size() < MAX_SPONSORS &&
-                r.nextInt((int)(1500/Math.log(renown))) == 0) {
+                r.nextInt((int)(1500/Math.log(getRenown()+2))) == 0) {
             addSponsor();
         }
         
+        if (getRenown() <= 0) {
+            showWindow(null, new GameOverWindow());
+        }
+        
         if (r.nextInt(DIFFICULTY) == 0) {
-            --renown;
+            setRenown(getRenown() - 1);
         }
     }
     
     protected void updateWorkers() {
+        if (getWorkerCount() == 0) {
+            showWindow(null, new SuicidedWindow());
+        }
         for (Worker worker: new ArrayList<Worker>(workerData)) {
             worker.update(this);
         }
@@ -457,7 +467,7 @@ public class Game {
     }
     
     public int getMaxWorkers() {
-        return 5 + renown/50;
+        return 5 + getRenown()/50;
     }
 
     public InventorySlot[] getCrafting() {
@@ -512,7 +522,7 @@ public class Game {
         if (!canExecuteOrder(sponsor)) return false;
         
         money += sponsor.getValue();
-        renown += sponsor.getRenown();
+        setRenown(getRenown() + sponsor.getRenown());
         for (InventorySlot req: sponsor.getRequired()) {
             int count = req.getCount();
             for (InventorySlot slot: inventory) {
@@ -537,6 +547,18 @@ public class Game {
         }
         
         return true;
+    }
+
+    public void setRenown(int renown) {
+        if (this.renown < MAX_RENOWN && renown >= MAX_RENOWN) {
+            renown = MAX_RENOWN;
+            showWindow(null, new WinWindow());
+        }
+        if (renown <= 0) {
+            renown = 0;
+        }
+            
+        this.renown = renown;
     }
     
 }
