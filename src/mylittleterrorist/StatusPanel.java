@@ -103,12 +103,14 @@ public class StatusPanel extends JPanel {
             add(detailPanel, BorderLayout.SOUTH);
             
             selectionNameLabel.setText(sel.getName());
-            selectionStatusLabel.setText(
-                    "<html>"+sel.getJobDescription()+"<br/><br/>"+
-                    (sel.getHolding() == null
-                        ? ""
-                        : "<b>Holding: "+sel.getHolding().name+"</b></br>")+
-                    "</html>");
+            String status = "<html>"+sel.getJobDescription()+"<br/><br/>";
+            if (sel.getJob() != null && sel.getJob().getProgress() != 0.0)
+                status += "<b>Progress</b>: "+(int)(sel.getJob().getProgress()*100)
+                        + "%</br>";
+            if (sel.getHolding() != null)
+                status += "<b>Holding</b>: "+sel.getHolding().name+"<br/>";
+            status += "</html>";
+            selectionStatusLabel.setText(status);
             selectionCancelJobButton.setVisible(sel.getJob() != null);
         } else {
             remove(detailPanel);
